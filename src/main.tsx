@@ -29,7 +29,7 @@ export default function App() {
   // ルーティングロジック
   if (currentPath.startsWith('/posts/')) {
     const slug = currentPath.split('/').pop() || '';
-    return <PostPage params={{ slug }} />;
+    return <PostPage params={Promise.resolve({ slug })} />;
   }
 
   return <HomePage />;
