@@ -44,7 +44,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: registry.uniproject.jp/rielu-site3/rielu-official-site
+          images: registry.uniproject.jp/rielu-site3/rielu-site3
           tags: |
             type=raw,value=latest
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}
@@ -58,8 +58,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=registry.uniproject.jp/rielu-site3/rielu-official-site:buildcache
-          cache-to: type=registry,ref=registry.uniproject.jp/rielu-site3/rielu-official-site:buildcache,mode=max
+          cache-from: type=registry,ref=registry.uniproject.jp/rielu-site3/rielu-site3:buildcache
+          cache-to: type=registry,ref=registry.uniproject.jp/rielu-site3/rielu-site3:buildcache,mode=max
 
       # 3. 署名 (自動生成されたタグに対しても実行)
       - name: Install Cosign
