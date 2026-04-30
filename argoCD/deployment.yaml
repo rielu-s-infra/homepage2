@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: registry.uniproject.jp/rielu/rielu-official-site:latest
+          image: registry.uniproject.jp/rielu-site3/rielu-site3:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
