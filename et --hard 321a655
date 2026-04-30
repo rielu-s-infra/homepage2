@@ -1,0 +1,190 @@
+[33mf33f312[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m HEAD@{0}: commit (amend): Merge branch 'master' of https://github.com/rielu-s-infra/homepage2
+[33m321a655[m HEAD@{1}: rebase (abort): returning to refs/heads/master
+[33m09d88db[m HEAD@{2}: rebase (pick): Implement responsive slideshow and enhance SEO metadata (#72)
+[33mb3c021d[m HEAD@{3}: rebase (pick): :hammer: Remove workflow for removing old artifacts
+[33mba085cb[m HEAD@{4}: rebase (pick): :hammer: Add workflow to remove old artifacts older than 2 weeks
+[33m47d3bf0[m HEAD@{5}: rebase (pick): :hammer: Set retention days for Docker image in workflows
+[33m45f0387[m HEAD@{6}: rebase (pick): Implement responsive slideshow and enhance SEO metadata (#71)
+[33mb2b7c65[m HEAD@{7}: rebase (pick): Implement responsive slideshow and enhance SEO metadata (#70)
+[33m1417440[m HEAD@{8}: rebase (pick): :bookmark: 1.5.4
+[33m9ae566e[m HEAD@{9}: rebase (pick): :hammer: Update app image version to 1.5.4 in deployment.yaml
+[33m9555417[m HEAD@{10}: rebase (pick): :bug: Set image dimensions for slideshow and update TypeScript configuration (#67)
+[33mbdb13cc[m HEAD@{11}: rebase (pick): :hammer: env deleted
+[33md558cda[m HEAD@{12}: rebase (pick): :hammer: Update app image version to 1.5.3 in deployment.yaml
+[33m174226f[m HEAD@{13}: rebase (pick): :bookmark: 1.5.3
+[33m8e94141[m HEAD@{14}: rebase (pick): :bug: Replace anchor tags with Link components for routing
+[33m0e1bf62[m HEAD@{15}: rebase (pick): :bug: lint error
+[33m1913170[m HEAD@{16}: rebase (pick): :arrow_up: Bump next from 14.2.12 to 15.0.2 (#66)
+[33m5463d7d[m HEAD@{17}: rebase (pick): :arrow_up: Bump eslint-config-next from 14.2.12 to 15.0.2 (#64)
+[33m9ac636e[m HEAD@{18}: rebase (pick): :arrow_up: Bump @next/third-parties from 14.2.13 to 15.0.2 (#65)
+[33m985152b[m HEAD@{19}: rebase (pick): :arrow_up: Bump typescript from 5.6.2 to 5.6.3 (#54)
+[33m9443aa2[m HEAD@{20}: rebase (pick): :arrow_up: Bump @types/react from 18.3.10 to 18.3.12 (#63)
+[33mf7317a5[m HEAD@{21}: rebase (pick): :hammer: insecureを廃止
+[33m647380e[m HEAD@{22}: rebase (pick): :hammer: レジストリ変更
+[33m6d9705c[m HEAD@{23}: rebase (pick): :hammer: cert-managerのクラスターイシューアをle-cf-prodに更新
+[33m9ceb32b[m HEAD@{24}: rebase (pick): :hammer: sslとwwwのリダイレクトなどを設定
+[33ma1b6763[m HEAD@{25}: rebase (pick): :hammer: リダイレクト無効化
+[33m2e92fe0[m HEAD@{26}: rebase (pick): :hammer: sslをcloudflareで
+[33m104a12c[m HEAD@{27}: rebase (pick): :hammer: Update argoCD deployment.yaml to use version 1.5.2 of unipro-site image
+[33m3015b1d[m HEAD@{28}: rebase (pick): :bookmark: 1.5.2
+[33m5b45b6e[m HEAD@{29}: rebase (pick): :recycle: Convert images to webp format
+[33m173ebfd[m HEAD@{30}: rebase (pick): :hammer: Update argoCD deployment.yaml to use version 1.5.1 of unipro-site image
+[33ma7a28d8[m HEAD@{31}: rebase (pick): :bookmark: 1.5.1
+[33m1f8e9f2[m HEAD@{32}: rebase (pick): :bug: クレジット関連で書き換え
+[33m293a484[m HEAD@{33}: rebase (pick): 画像をwebp変換
+[33md9f4583[m HEAD@{34}: rebase (pick): :hammer: Update argoCD deployment.yaml to use version 1.5.0 of unipro-site image
+[33m5a78250[m HEAD@{35}: rebase (pick): :bookmark: 1.5.0
+[33m7ef9c09[m HEAD@{36}: rebase (pick): :arrow_up: npm
+[33mfaf28c1[m HEAD@{37}: rebase (pick): :bug: 次の画像が表示されないバグを修正
+[33ma414743[m HEAD@{38}: rebase (pick): :sparkles: slideshow componentを追加
+[33mf82bcd3[m HEAD@{39}: rebase (pick): :hammer: test
+[33m76c0774[m HEAD@{40}: rebase (pick): :hammer: レート解除まで
+[33m6a801f5[m HEAD@{41}: rebase (pick): :hammer: test
+[33me51879f[m HEAD@{42}: rebase (pick): :hammer: test
+[33m61c2854[m HEAD@{43}: rebase (pick): :hammer: test
+[33m4e8e4e9[m HEAD@{44}: rebase (pick): :hammer: test
+[33m337698f[m HEAD@{45}: rebase (pick): :hammer: test
+[33ma856f13[m HEAD@{46}: rebase (pick): :hammer: test
+[33mc4d2422[m HEAD@{47}: rebase (pick): :hammer: miss
+[33mcf63d76[m HEAD@{48}: rebase (pick): :hammer: test
+[33m8f29624[m HEAD@{49}: rebase (pick): :hammer: test
+[33m0637a89[m HEAD@{50}: rebase (pick): :hammer: test
+[33m3b6ac30[m HEAD@{51}: rebase (pick): :hammer: test
+[33m2bedb93[m HEAD@{52}: rebase (pick): :hammer: test
+[33m9963595[m HEAD@{53}: rebase (pick): :hammer: test
+[33m1c877ec[m HEAD@{54}: rebase (pick): :hammer: test
+[33mebec48d[m HEAD@{55}: rebase (pick): :hammer: miss
+[33m236a400[m HEAD@{56}: rebase (pick): :hammer: test
+[33mb68ff50[m HEAD@{57}: rebase (pick): :hammer: miss
+[33m391eeed[m HEAD@{58}: rebase (pick): :hammer: miss
+[33mdf77b27[m HEAD@{59}: rebase (pick): :hammer: miss
+[33m790c955[m HEAD@{60}: rebase (pick): :hammer: ingress init
+[33mc047f03[m HEAD@{61}: rebase (pick): :hammer: miss
+[33m8f5a0bf[m HEAD@{62}: rebase (pick): :hammer: uppkg
+[33m9ca3932[m HEAD@{63}: rebase (pick): :bookmark: 1.4.7
+[33m53bbc34[m HEAD@{64}: rebase (pick): :hammer: miss
+[33m32445da[m HEAD@{65}: rebase (pick): :hammer: uppkg
+[33mffdd1cc[m HEAD@{66}: rebase (pick): :bookmark: 1.4.6
+[33mcf72f5d[m HEAD@{67}: rebase (pick): :hammer: test
+[33m1d6d7c2[m HEAD@{68}: rebase (pick): :hammer: miss
+[33m556290b[m HEAD@{69}: rebase (pick): :hammer: test
+[33m941b3f8[m HEAD@{70}: rebase (pick): :hammer: miss
+[33mda37964[m HEAD@{71}: rebase (pick): :hammer: uppkg
+[33m749028d[m HEAD@{72}: rebase (pick): :hammer: job分割
+[33m561eebd[m HEAD@{73}: rebase (pick): :bookmark: 1.4.5
+[33m4a53799[m HEAD@{74}: rebase (pick): :arrow_up: Bump eslint-config-next from 14.2.9 to 14.2.12 (#39)
+[33m93eb2b8[m HEAD@{75}: rebase (pick): :hammer: miss
+[33m6af93e4[m HEAD@{76}: rebase (pick): :hammer: dependa miss
+[33m348d9eb[m HEAD@{77}: rebase (pick): :arrow_up: npm update
+[33m88fc0c0[m HEAD@{78}: rebase (pick): :arrow_up: Bump next from 14.2.9 to 14.2.12 in the npm_and_yarn group (#35)
+[33m3fe9d90[m HEAD@{79}: rebase (pick): :bookmark: 1.4.4
+[33m31020c9[m HEAD@{80}: rebase (pick): :arrow_up: DockerImage Updated
+[33m44ed2f9[m HEAD@{81}: rebase (pick): :arrow_up: 競合を修正
+[33m0a085d9[m HEAD@{82}: rebase (pick): :bookmark: 1.4.3
+[33mae10a9b[m HEAD@{83}: rebase (pick): :hammer: upimg
+[33m77d816f[m HEAD@{84}: rebase (pick): :arrow_up: Bump eslint-config-next from 14.2.7 to 14.2.9 (#28)
+[33m382f28f[m HEAD@{85}: rebase (pick): :arrow_up: Bump @types/node from 22.5.1 to 22.5.4 (#29)
+[33m2ddac5d[m HEAD@{86}: rebase (pick): :arrow_up: Bump eslint from 8.57.0 to 9.10.0 (#27)
+[33md05ef1d[m HEAD@{87}: rebase (pick): :arrow_up: Bump postcss from 8.4.41 to 8.4.45 (#26)
+[33mdcd8e27[m HEAD@{88}: rebase (pick): :arrow_up: Bump next from 14.2.6 to 14.2.9 (#25)
+[33m40373db[m HEAD@{89}: rebase (pick): Update README.md
+[33m8efa02b[m HEAD@{90}: rebase (pick): :hammer: uppkg
+[33mbab12cb[m HEAD@{91}: rebase (pick): :bookmark: 1.4.2
+[33m28d387a[m HEAD@{92}: rebase (pick): :arrow_up: 依存関係の競合を修正
+[33meb5729b[m HEAD@{93}: rebase (pick): :hammer: imgupdate
+[33m52e87a3[m HEAD@{94}: rebase (pick): :bookmark: 1.4.1
+[33m4d5b569[m HEAD@{95}: rebase (pick): :arrow_up: Bump eslint from 8.57.0 to 9.9.1 (#16)
+[33m218d7d0[m HEAD@{96}: rebase (pick): :arrow_up: Bump tailwindcss from 3.4.9 to 3.4.10 (#14)
+[33ma890472[m HEAD@{97}: rebase (pick): :arrow_up: Bump @next/third-parties from 14.2.5 to 14.2.7 (#20)
+[33m7b10348[m HEAD@{98}: rebase (pick): :arrow_up: Bump next from 14.2.5 to 14.2.6 (#17)
+[33mcd39a9b[m HEAD@{99}: rebase (pick): :arrow_up: Bump eslint-config-next from 14.2.5 to 14.2.6 (#19)
+[33m7f7cf7f[m HEAD@{100}: rebase (pick): :hammer: timezone
+[33mf5bed46[m HEAD@{101}: rebase (pick): Revert ":arrow_up: Bump @types/node from 22.2.0 to 22.4.1 (#15)"
+[33md8e456a[m HEAD@{102}: rebase (pick): Revert ":arrow_up: Bump eslint from 8.57.0 to 9.9.0 (#13)"
+[33m68c2530[m HEAD@{103}: rebase (pick): :arrow_up: Bump @types/node from 22.2.0 to 22.4.1 (#15)
+[33m1fda41f[m HEAD@{104}: rebase (pick): :arrow_up: Bump eslint from 8.57.0 to 9.9.0 (#13)
+[33m4555452[m HEAD@{105}: rebase (pick): :hammer: ファイル分割
+[33m1eddc36[m HEAD@{106}: rebase (pick): :recycle: 1.4.0
+[33m2d3e4cb[m HEAD@{107}: rebase (pick): :hammer: リリース準備
+[33meb0ca13[m HEAD@{108}: rebase (pick): :recycle: Update layout and add documentation (#12)
+[33mc5cd72e[m HEAD@{109}: rebase (pick): :bug: 1.3.1
+[33m73414b9[m HEAD@{110}: rebase (pick): :hammer: deployment.yamlのバージョンアップ
+[33m1ea9b82[m HEAD@{111}: rebase (pick): Implement button disable functionality (#9)
+[33m8e05d47[m HEAD@{112}: rebase (pick): :recycle: 1.3.0
+[33mecc792f[m HEAD@{113}: rebase (pick): sitemapなどの設定の追加 (#8)
+[33m395d0e4[m HEAD@{114}: rebase (pick): :recycle: 1.2.0
+[33m69f438f[m HEAD@{115}: rebase (pick): :sparkles: 1.1.0
+[33m52a9ebd[m HEAD@{116}: rebase (pick): :hammer: uppkg
+[33m8d0bd19[m HEAD@{117}: rebase (pick): :sparkles: sitemapの作成
+[33m09d9efe[m HEAD@{118}: rebase (pick): Bump next from 14.2.4 to 14.2.5 (#5)
+[33m13f6628[m HEAD@{119}: rebase (pick): :hammer: lint workflow miss
+[33m97de3c6[m HEAD@{120}: rebase (pick): Bump tailwindcss from 3.4.4 to 3.4.9 (#7)
+[33m5f6d7a0[m HEAD@{121}: rebase (pick): Bump postcss from 8.4.39 to 8.4.41 (#6)
+[33mfdbe289[m HEAD@{122}: rebase (pick): :hammer: eslint setuped
+[33mc8a92af[m HEAD@{123}: rebase (pick): Bump typescript from 5.5.3 to 5.5.4 (#4)
+[33me4fdfa7[m HEAD@{124}: rebase (pick): Bump @types/node from 20.14.10 to 22.2.0 (#3)
+[33m101e06c[m HEAD@{125}: rebase (pick): Create eslint.yml
+[33me996edf[m HEAD@{126}: rebase (pick): :bug: Argo ver miss
+[33m1828f35[m HEAD@{127}: rebase (pick): :bug: 1.0.1
+[33m9138b9a[m HEAD@{128}: rebase (pick): :bug: nextjs ver miss
+[33m76f6996[m HEAD@{129}: rebase (pick): :sparkles: 1.0.0
+[33m46b5799[m HEAD@{130}: rebase (pick): :pencil2: ディレクトリ名のミス
+[33m333582b[m HEAD@{131}: rebase (pick): :bug: Branch name in docker-push.yaml
+[33m9f9235d[m HEAD@{132}: rebase (pick): :hammer: リリース準備 (#2)
+[33m045fe89[m HEAD@{133}: rebase: fast-forward
+[33meb07335[m HEAD@{134}: rebase: fast-forward
+[33m635cf7a[m HEAD@{135}: rebase: fast-forward
+[33mfe50ba3[m HEAD@{136}: rebase: fast-forward
+[33mb615e3a[m HEAD@{137}: rebase: fast-forward
+[33m0337749[m HEAD@{138}: rebase: fast-forward
+[33mf7613e5[m HEAD@{139}: rebase: fast-forward
+[33m034875b[m HEAD@{140}: rebase: fast-forward
+[33m8ee1592[m HEAD@{141}: rebase: fast-forward
+[33m6134fbc[m HEAD@{142}: rebase: fast-forward
+[33me538767[m HEAD@{143}: rebase: fast-forward
+[33mbea2c8b[m HEAD@{144}: rebase: fast-forward
+[33me40f5f8[m HEAD@{145}: rebase: fast-forward
+[33m46f1665[m HEAD@{146}: rebase: fast-forward
+[33m4aa7d82[m HEAD@{147}: rebase: fast-forward
+[33md7bf32d[m HEAD@{148}: rebase: fast-forward
+[33mca4a245[m HEAD@{149}: rebase (start): checkout ca4a2457ea276adbf03400d415df83abc341610f
+[33m321a655[m HEAD@{150}: commit (amend): Merge branch 'master' of https://github.com/rielu-s-infra/homepage2
+[33m4dca228[m HEAD@{151}: commit (amend): Merge branch 'master' of https://github.com/rielu-s-infra/homepage2
+[33m3f11c9b[m[33m ([m[1;33mtag: [m[1;33mv4.3.30[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{152}: pull --tags origin master: Merge made by the 'ort' strategy.
+[33m2e6c023[m HEAD@{153}: commit (amend): update : link
+[33m7d5848e[m HEAD@{154}: commit (amend): update : link
+[33mfb8376a[m[33m ([m[1;33mtag: [m[1;33mv4.3.29[m[33m)[m HEAD@{155}: pull --tags origin master: Fast-forward
+[33m532195e[m[33m ([m[1;33mtag: [m[1;33mv4.3.12[m[33m)[m HEAD@{156}: commit: fix
+[33m715426b[m[33m ([m[1;33mtag: [m[1;33mv4.3.11[m[33m)[m HEAD@{157}: commit: edit : any
+[33m5ee21c2[m[33m ([m[1;33mtag: [m[1;33mv4.3.10[m[33m)[m HEAD@{158}: commit: fix : fix
+[33md70a919[m[33m ([m[1;33mtag: [m[1;33mv4.3.9[m[33m)[m HEAD@{159}: commit: edit : work
+[33m7d2a24c[m[33m ([m[1;33mtag: [m[1;33mv4.3.8[m[33m)[m HEAD@{160}: commit: edit : system
+[33m325b364[m HEAD@{161}: commit: fix : name
+[33mcb14472[m[33m ([m[1;33mtag: [m[1;33mv1.2.4[m[33m)[m HEAD@{162}: commit: fix : deploy
+[33mb8d3e7a[m[33m ([m[1;33mtag: [m[1;33mv1.2.2[m[33m, [m[1;33mtag: [m[1;33mv1.2.1[m[33m, [m[1;31mmaster/master[m[33m, [m[1;31mmaster/HEAD[m[33m)[m HEAD@{163}: commit: fix : push
+[33m76efccd[m HEAD@{164}: commit: fix : system
+[33mf6739a2[m HEAD@{165}: commit: fix : typo
+[33m5a3563e[m HEAD@{166}: commit: fix : values
+[33m891d15a[m HEAD@{167}: commit: fix : values
+[33m235ac81[m HEAD@{168}: commit: fix : version
+[33m49c1279[m HEAD@{169}: commit: fix : fix
+[33m5e28eed[m HEAD@{170}: commit: fix : fix
+[33m0ccc656[m HEAD@{171}: pull --tags origin master: Fast-forward
+[33m51fcd50[m HEAD@{172}: commit: fix : fix
+[33m3f46517[m[33m ([m[1;33mtag: [m[1;33mv1.0.0beta[m[33m)[m HEAD@{173}: commit: fix : docker
+[33mc0a5ba7[m HEAD@{174}: commit: fix : error
+[33mf8ff8dc[m[33m ([m[1;33mtag: [m[1;33mv1.1[m[33m)[m HEAD@{175}: commit: fix : system
+[33m84a40e0[m HEAD@{176}: commit: fix : appnname
+[33mf7e0e2e[m[33m ([m[1;33mtag: [m[1;33mv1.0.0[m[33m, [m[1;33mtag: [m[1;33mV1.0[m[33m)[m HEAD@{177}: pull --tags origin master: Fast-forward
+[33m4ad72af[m HEAD@{178}: commit: fix : system #5
+[33m815415a[m HEAD@{179}: commit: fix : system
+[33me431e29[m HEAD@{180}: commit: fix : system #3
+[33m3e18947[m HEAD@{181}: commit: fix : system #2
+[33mfe15ccc[m HEAD@{182}: commit: fix : system
+[33m365e032[m HEAD@{183}: commit: fix : errors
+[33m45ee5df[m HEAD@{184}: commit: fix : biome error and more
+[33m0151128[m HEAD@{185}: commit: fix
+[33m5ca78d3[m HEAD@{186}: commit: add : env
+[33m3ad62c5[m HEAD@{187}: pull --tags origin master: Merge made by the 'ort' strategy.
+[33mbb010dd[m HEAD@{188}: commit: fix
+[33m1a390e7[m[33m ([m[1;33mtag: [m[1;33mv4.3.7[m[33m)[m HEAD@{189}: clone: from https://github.com/UniPro-tech/UniPro-site.git
