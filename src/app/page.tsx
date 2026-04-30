@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image'; // Added for image optimization
-import ReactMarkdown from 'react-markdown';
-import type { Repo } from '../lib/github';
-import { getGitHubRepos } from '../lib/github';
-import type { AboutData, Post } from '../lib/posts';
-import { getAboutContent, getPosts } from '../lib/posts';
-import type { ServiceStatus } from '../lib/status';
-import { getKumaStatus } from '../lib/status';
+import Image from "next/image"; // Added for image optimization
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { getGitHubRepos } from "../lib/github";
+import type { Repo } from "../lib/github";
+import { getAboutContent, getPosts } from "../lib/posts";
+import type { AboutData, Post } from "../lib/posts";
+import { getKumaStatus } from "../lib/status";
+import type { ServiceStatus } from "../lib/status";
 
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -16,17 +16,17 @@ export default function HomePage() {
   const [about, setAbout] = useState<AboutData | null>(null);
   const [services, setServices] = useState<ServiceStatus[]>([]);
 
-  const kumaSlug = "rielu-service"; 
+  const kumaSlug = "rielu-service";
 
   useEffect(() => {
     // 初回読み込み
     getKumaStatus(kumaSlug).then(setServices);
-    
+
     // 1分ごとに更新（ポーリング）
     const interval = setInterval(() => {
       getKumaStatus(kumaSlug).then(setServices);
     }, 60000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -38,7 +38,7 @@ export default function HomePage() {
     getGitHubRepos(username).then(setRepos).catch(console.error);
   }, []); // Removed 'username' from dependencies as it's a constant
 
-return (
+  return (
     <div className="min-h-screen pb-20">
       {/* Header */}
       <header className="max-w-5xl mx-auto pt-24 px-6">
@@ -59,31 +59,56 @@ return (
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  <span className="text-xs font-mono text-slate-500 tracking-widest uppercase">System Active</span>
+                  <span className="text-xs font-mono text-slate-500 tracking-widest uppercase">
+                    System Active
+                  </span>
                 </div>
                 <h1 className="text-5xl font-black text-white sm:text-7xl tracking-tighter">
                   Rieru<span className="text-sky-500">.</span>dev
                 </h1>
               </div>
             </div>
-            
+
             <p className="mt-6 text-xl text-slate-400 max-w-max leading-relaxed">
-              Infrastructure Engineer. focusing on <span className="text-white">Kubernetes</span>, 
-              <span className="text-white">IPv6 Networking</span>, and <span className="text-white">Self-hosting</span>.
+                Infrastructure Engineer. focusing on{" "}
+                <span className="text-white">Kubernetes</span>,
+                <span className="text-white">IPv6 Networking</span>, and{" "}
+                <span className="text-white">Self-hosting</span>.
             </p>
-            
+
             <div className="mt-10 flex flex-wrap gap-4">
-              <a href="#repos" className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold transition-all shadow-lg shadow-sky-900/20">GitHub Projects</a>
-              <a href="#posts" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-all border border-slate-700">Read Blog</a>
+                <a
+                  href="#repos"
+                  className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold transition-all shadow-lg shadow-sky-900/20"
+                >
+                  GitHub Projects
+                </a>
+                <a
+                  href="#posts"
+                  className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-all border border-slate-700"
+                >
+                  Read Blog
+                </a>
               {/* リンク集へのボタン */}
-              <a 
+                <a
                 href="https://rielulinks.uniproject.jp" // リンク集サイトのパス（または外部URL）
                 className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2"
               >
-                <span>Link Tree</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <title>External Link</title> {/* Added title for accessibility */}
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  <span>Link Tree</span>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <title>External Link</title>{" "}
+                    {/* Added title for accessibility */}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
                 </svg>
               </a>
             </div>
@@ -92,20 +117,22 @@ return (
       </header>
 
       <main className="max-w-5xl mx-auto px-6 mt-32 space-y-32">
-        
+
         {/* About Section */}
         <section id="about" className="scroll-mt-24">
           <div className="flex items-center gap-3 mb-8">
-            <h2 className="text-xl font-bold text-white tracking-tight">About Me</h2>
+            <h2 className="text-xl font-bold text-white tracking-tight">
+              About Me
+            </h2>
             <div className="h-[1px] flex-1 bg-slate-800"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             {/* About内アイコン */}
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
                 <Image
-                  src="/icon.png" 
+                  src="/icon.png"
                   alt="Profile"
                   className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
                   width={200} // Added width for Image component (example value)
@@ -113,8 +140,16 @@ return (
                 />
               </div>
               <div className="w-full space-y-4">
-                <AboutInfoCard label="Role" value={about?.attributes.role || "Engineer"} color="text-sky-400" />
-                <AboutInfoCard label="Base" value={about?.attributes.location || "Japan"} color="text-slate-200" />
+                <AboutInfoCard
+                  label="Role"
+                  value={about?.attributes.role || "Engineer"}
+                  color="text-sky-400"
+                />
+                <AboutInfoCard
+                  label="Base"
+                  value={about?.attributes.location || "Japan"}
+                  color="text-slate-200"
+                />
               </div>
             </div>
 
@@ -127,17 +162,19 @@ return (
         {/* Server Status - グリッドを少し強調 */}
         <section className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white tracking-tight">System Status</h2>
+            <h2 className="text-xl font-bold text-white tracking-tight">
+              System Status
+            </h2>
             <span className="text-[10px] font-mono text-slate-500 uppercase">Auto-refresh: 60s</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {services.length > 0 ? (
               services.map((svc) => (
-                <StatusCard 
-                  key={svc.name} 
-                  label={svc.name} 
-                  status={svc.status} 
-                  color={svc.color} 
+                <StatusCard
+                  key={svc.name}
+                  label={svc.name}
+                  status={svc.status}
+                  color={svc.color}
                 />
               ))
             ) : (

@@ -4,14 +4,17 @@ import { getPostBySlug, getPosts } from "../../../lib/posts"; // パスは適宜
 
 // SSG（静的サイト生成）のために全スラグを事前に定義
 export async function generateStaticParams() {
-  // biome-ignore lint/style/noVar: <explanation>
   const posts = getPosts();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+fixexport default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
 
