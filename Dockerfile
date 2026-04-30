@@ -54,51 +54,30 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN bun run build
 
 # ============================================
-# Stage 3: Run Next.js application
+# Stage 3: Run Vite application (Static Server)
 # ============================================
 
 FROM oven/bun:1 AS runner
 
-# Set working directory
 WORKDIR /app
 
-# Set production environment variables
+# 本番環境用の設定
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the run time.
-# ENV NEXT_TELEMETRY_DISABLED=1
-
-# Copy production assets
-COPY --from=builder --chown=bun:bun /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown bun:bun .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+# builderステージで生成された dist フォルダをコピー
 COPY --from=builder /app/dist ./dist
 
-# If you want to persist the fetch cache generated during the build so that
-# cached responses are available immediately on startup, uncomment this line:
-# COPY --from=builder --chown=bun:bun /app/.next/cache ./.next/cache
+# 静的ファイルを配信するために 'serve' パッケージを利用するか、
+# もしくは単純に Bun でサーバーを起動します。
+# ここでは一番手軽な 'serve' を使う方法にします。
+RUN bun add serve
 
-# Copy the Prisma schema to migrate
-# COPY --from=builder --chown=bun:bun /app/prisma ./prisma
-# COPY --from=builder --chown=bun:bun /app/prisma.config.ts ./prisma.config.ts
-# RUN bun add prisma
-# RUN chmod -R 777 /app/node_modules
-
-# Switch to non-root user for security best practices
+# Switch to non-root user
 USER bun
 
-# Expose port 3000 to allow HTTP traffic
+# Expose port 3000
 EXPOSE 3000
 
-# Start Next.js standalone server with Bun
-# CMD ["sh", "-c", "bun x prisma migrate deploy && bun server.js"]
-CMD ["sh", "-c", "bun server.js"]
+# 'dist' フォルダの中身を 3000番ポートで配信
+CMD ["bunx", "serve", "-s", "dist", "-l", "3000"]
