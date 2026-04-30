@@ -61,23 +61,19 @@ FROM oven/bun:1 AS runner
 
 WORKDIR /app
 
-# 本番環境用の設定
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# builderステージで生成された dist フォルダをコピー
 COPY --from=builder /app/dist ./dist
 
-# 静的ファイルを配信するために 'serve' パッケージを利用するか、
-# もしくは単純に Bun でサーバーを起動します。
-# ここでは一番手軽な 'serve' を使う方法にします。
+# serve をインストール
 RUN bun add serve
 
-# Switch to non-root user
 USER bun
 
-# Expose port 3000
 EXPOSE 3000
 
-# 'dist' フォルダの中身を 3000番ポートで配信
-CMD ["bunx", "serve", "-s", "dist", "-l", "3000", "0.0.0.0"]
+# 正しい引数の渡し方: -l (listen) の後にポート、その後にホストを指定する場合が多いですが、
+# 'serve' の場合は '-l 3000' で全インターフェースを向くこともありますが、
+# 確実に 0.0.0.0 を指定するには以下のように記述します。
+CMD ["bunx", "serve", "-s", "dist", "-l", "3000"]
