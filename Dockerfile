@@ -80,4 +80,4 @@ USER bun
 EXPOSE 3000
 
 # 'dist' フォルダの中身を 3000番ポートで配信
-CMD ["bunx", "serve", "-s", "dist", "-l", "3000"]
+CMD ["bunx", "serve", "-s", "dist", "-l", "3000", "0.0.0.0"]
