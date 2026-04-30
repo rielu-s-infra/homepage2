@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image'; // Added for image optimization
 import ReactMarkdown from 'react-markdown';
-import { getPosts, getAboutContent } from '../lib/posts';
-import type { Post, AboutData } from '../lib/posts';
-import { getGitHubRepos } from '../lib/github';
 import type { Repo } from '../lib/github';
-import { getKumaStatus } from '../lib/status';
+import { getGitHubRepos } from '../lib/github';
+import type { AboutData, Post } from '../lib/posts';
+import { getAboutContent, getPosts } from '../lib/posts';
 import type { ServiceStatus } from '../lib/status';
+import { getKumaStatus } from '../lib/status';
 
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -32,10 +33,10 @@ export default function HomePage() {
   const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
 
   useEffect(() => {
-    setPosts(getPosts());
+    setPosts(getPosts()); // This is a client-side fetch, so it's fine.
     setAbout(getAboutContent());
     getGitHubRepos(username).then(setRepos).catch(console.error);
-  }, [username]);
+  }, []); // Removed 'username' from dependencies as it's a constant
 
 return (
     <div className="min-h-screen pb-20">
@@ -47,10 +48,12 @@ return (
               {/* アイコン画像 (Avatar) */}
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse"></div>
-                <img 
+                <Image
                   src="/icon.png" // 公開ディレクトリ(public)に icon.png を配置してください
                   alt="Rieru"
                   className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900"
+                  width={80} // Added width for Image component
+                  height={80} // Added height for Image component
                 />
               </div>
               <div>
@@ -78,7 +81,10 @@ return (
                 className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2"
               >
                 <span>Link Tree</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <title>External Link</title> {/* Added title for accessibility */}
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
               </a>
             </div>
           </div>
@@ -98,10 +104,12 @@ return (
             {/* About内アイコン */}
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-                <img 
+                <Image
                   src="/icon.png" 
                   alt="Profile"
                   className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+                  width={200} // Added width for Image component (example value)
+                  height={200} // Added height for Image component (example value)
                 />
               </div>
               <div className="w-full space-y-4">

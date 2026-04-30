@@ -1,5 +1,5 @@
 // tailwind.config.js
-import typography from '@tailwindcss/typography';
+import typography from "@tailwindcss/typography";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -11,6 +11,6 @@ export default {
     extend: {},
   },
   plugins: [
-    typography, // importしたものを入れる
+    typography, // importしたものを入れる{" "}
   ],
-}
+};

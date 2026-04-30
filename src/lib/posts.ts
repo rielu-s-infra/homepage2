@@ -25,7 +25,7 @@ export interface AboutData {
   attributes: {
     role?: string;
     location?: string;
-    [key: string]: any;
+    [key: string]: unknown; // Changed 'any' to 'unknown'
   };
   content: string;
 }

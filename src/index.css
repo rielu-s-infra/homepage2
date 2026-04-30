@@ -1,4 +1,4 @@
-@import "tailwindcss";
+fix@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 :root {
@@ -24,12 +24,13 @@ body {
 
   /* インフラダッシュボード風カード */
   .glass-card {
-    @apply bg-slate-900/50 border border-slate-800 rounded-xl p-6
-           transition-all duration-300 hover:border-sky-500/50 hover:bg-slate-800/80;
+    @apply bg-slate-900/50 border border-slate-800 rounded-xl p-6 transition-all
+      duration-300 hover:border-sky-500/50 hover:bg-slate-800/80;
   }
 
   /* Markdown表示の最適化 */
   .prose-custom {
     @apply prose prose-invert max-w-none prose-headings:text-white prose-a:text-sky-400 prose-code:text-sky-300 prose-strong:text-slate-100;
   }
+}
 }

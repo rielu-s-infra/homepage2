@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "types": ["node", "vite/client"],
+    "types": ["vite/client", "node"], // Combined and sorted
     "tsBuildInfoFile": "./node_modules/.dottsbuildinfo",
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -21,9 +21,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false, // ここを false にすると a, b の any エラーが消えます
-
-    /* Node.js の型を追加 */
-    "types": ["node"] 
   },
   "include": ["src"]
 }
