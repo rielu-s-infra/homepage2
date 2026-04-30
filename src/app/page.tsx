@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { getPosts, getAboutContent } from '../lib/posts';
