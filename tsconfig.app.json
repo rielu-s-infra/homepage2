@@ -20,7 +20,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false, // ここを false にすると a, b の any エラーが消えます
+    "noImplicitAny": false // ここを false にすると a, b の any エラーが消えます
   },
   "include": ["src"]
 }

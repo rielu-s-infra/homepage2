@@ -21,7 +21,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   return (
     <article className="max-w-3xl mx-auto pt-32 px-6 pb-20">
-      <header className="mb-12">{" "}
+      <header className="mb-12">
         <div className="flex items-center gap-4 mb-6">
           <span className="text-sm font-mono text-sky-500">{post.date}</span>
           <span className="h-[1px] w-12 bg-slate-800"></span>
@@ -35,11 +35,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       </header>
 
       {/* Markdownを表示 */}
-      <div className="prose prose-invert prose-sky max-w-none">{" "}
+      <div className="prose prose-invert prose-sky max-w-none">
         <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
 
-      <footer className="mt-20 pt-8 border-t border-slate-800">{" "}
+      <footer className="mt-20 pt-8 border-t border-slate-800">
         <a
           href="/"
           className="text-sky-500 hover:text-sky-400 font-mono text-sm"

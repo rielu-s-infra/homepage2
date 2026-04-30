@@ -16,7 +16,7 @@ export async function getGitHubRepos(username: string): Promise<Repo[]> {
   };
 
   if (token) {
-    headers['Authorization'] = `token ${token}`;
+    headers.Authorization = `token ${token}`;
   }
 
   const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=10`, {
