@@ -12,24 +12,27 @@ export async function getGitHubRepos(username: string): Promise<Repo[]> {
   const token = import.meta.env.VITE_GITHUB_TOKEN;
 
   const headers: HeadersInit = {
-    'Accept': 'application/vnd.github.v3+json',
+    Accept: "application/vnd.github.v3+json",
   };
 
   if (token) {
     headers.Authorization = `token ${token}`;
   }
 
-  const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=10`, {
-    // Vite(React)では next: { revalidate } は無視されますが、
-    // ブラウザのキャッシュ機能は働きます。
-    method: 'GET',
-    headers: headers,
-  });
+  const res = await fetch(
+    `https://api.github.com/users/${username}/repos?sort=updated&per_page=10`,
+    {
+      // Vite(React)では next: { revalidate } は無視されますが、
+      // ブラウザのキャッシュ機能は働きます。
+      method: "GET",
+      headers: headers,
+    },
+  );
 
   if (!res.ok) {
     // レートリミット制限などに掛かった場合のハンドリング
     console.error(`GitHub API error: ${res.status}`);
-    return []; 
+    return [];
   }
 
   return res.json();

@@ -10,11 +10,9 @@ export async function generateStaticParams() {
   }));
 }
 
-fixexport default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+fixexport;
+default async
+function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
 
