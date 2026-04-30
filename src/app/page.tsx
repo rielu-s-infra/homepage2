@@ -88,7 +88,7 @@ export default function HomePage() {
               </a>
               {/* リンク集へのボタン */}
               <a
-                href="https://rielulinks.uniproject.jp"
+                href="https://rielulink.uniproject.jp/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2"
