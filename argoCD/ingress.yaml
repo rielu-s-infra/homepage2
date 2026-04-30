@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: rielu-site2-combined-ingress
-  namespace: rielu-site2
+  namespace: rielu-off-site
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: rielu.uniproject.jp
+    - host: rieluoff.uniproject.jp
       http:
         paths:
           # フロントエンド（rewriteなし：/assets/xxx がそのまま届く）
@@ -23,21 +23,21 @@ spec:
                   number: 3000
   tls:
     - hosts:
-        - rielu.uniproject.jp
-      secretName: rielu-uniproject-jp-tls
+        - rieluoff.uniproject.jp
+      secretName: rieluoff-uniproject-jp-tls
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: rielu-site2-api-ingress
-  namespace: rielu-site2
+  namespace: rieluoff-site
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
-    - host: rielu.uniproject.jp
+    - host: rieluoff.uniproject.jp
       http:
         paths:
           # API（ここだけ rewrite あり）

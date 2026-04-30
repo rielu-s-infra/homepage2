@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: registry.rielu-homepage2/official/rielu-homepage2-site:1.0.0.0
+          image: registry.rielu-homepage2/official/rielu-homepage2-site:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

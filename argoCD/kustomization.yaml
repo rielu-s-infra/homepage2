@@ -10,4 +10,4 @@ resources:
 labels:
   - includeSelectors: true
     pairs:
-      app: rielu-homepage
+      app: rielu-homepage2-site

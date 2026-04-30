@@ -37,7 +37,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6
         with:
-          images: registry.uniproject.jp/official/unipro-site
+          images: registry.uniproject.jp/rielu/rielu-official-site
           tags: |
             type=raw,value=latest
             type=semver,pattern={{version}}
@@ -51,8 +51,8 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=registry.uniproject.jp/official/unipro-site:buildcache
-          cache-to: type=registry,ref=registry.uniproject.jp/official/unipro-site:buildcache,mode=max
+          cache-from: type=registry,ref=registry.uniproject.jp/rielu/rielu-official-site:buildcache
+          cache-to: type=registry,ref=registry.uniproject.jp/rielu/rielu-official-site:buildcache,mode=max
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
