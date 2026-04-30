@@ -1,4 +1,3 @@
-import Image from "next/image"; // Imageコンポーネントをインポート
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Repo } from "../lib/github";
@@ -28,7 +27,7 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || "penti-nameko";
+  const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
 
   useEffect(() => {
     setPosts(getPosts());
@@ -46,12 +45,12 @@ export default function HomePage() {
               {/* アイコン画像 (Avatar) */}
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
-                <Image
-                  src="/icon.png"
-                  alt="Rieru Icon"
-                  width={80}
-                  height={80}
-                  className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900"
+                <img 
+                  src="/icon.png" 
+                  alt="Rieru Icon" 
+                  width="80" 
+                  height="80" 
+                  className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900" 
                 />
               </div>
               <div>
@@ -130,7 +129,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-                <Image
+                <img
                   src="/icon.png"
                   alt="Profile"
                   width={400}
