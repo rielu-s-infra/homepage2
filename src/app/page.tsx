@@ -28,7 +28,7 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
+  const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || "penti-nameko";
 
   useEffect(() => {
     setPosts(getPosts());
