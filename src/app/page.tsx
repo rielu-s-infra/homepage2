@@ -1,6 +1,6 @@
+import Image from "next/image"; // Imageコンポーネントをインポート
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import Image from "next/image"; // Imageコンポーネントをインポート
 import type { Repo } from "../lib/github";
 import { getGitHubRepos } from "../lib/github";
 import type { AboutData, Post } from "../lib/posts";
@@ -34,7 +34,7 @@ export default function HomePage() {
     setPosts(getPosts());
     setAbout(getAboutContent());
     getGitHubRepos(username).then(setRepos).catch(console.error);
-  }, [username]);
+  }, []);
 
   return (
     <div className="min-h-screen pb-20">
