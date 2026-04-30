@@ -4,11 +4,10 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
-  - registry.yaml
-  - env.yaml
   - imageUpdater.yaml
   - hpa.yaml
+  - service-uptimekuma.yaml
 labels:
   - includeSelectors: true
     pairs:
-      app: unipro-site
+      app: rielu-homepage

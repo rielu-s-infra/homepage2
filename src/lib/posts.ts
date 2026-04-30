@@ -1,71 +1,66 @@
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
+// src/lib/posts.ts
+import matter from 'gray-matter';
 
-export type Post = {
+// Markdownファイルを一括取得（最新のVite形式）
+const postModules = import.meta.glob('/posts/*.md', { 
+  query: '?raw', 
+  import: 'default', 
+  eager: true 
+});
+
+const contentModules = import.meta.glob('/content/*.md', { 
+  query: '?raw', 
+  import: 'default', 
+  eager: true 
+});
+
+export interface Post {
   slug: string;
   title: string;
-  date: Date;
-  description: string;
+  date: string;
   content: string;
-  ogImage?: string;
-};
-
-export function getAllPosts(): Post[] {
-  const postsDirectory = path.join(process.cwd(), "posts");
-  const filenames = fs.readdirSync(postsDirectory);
-
-  return filenames.map((filename) => {
-    const filePath = path.join(postsDirectory, filename);
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const { data, content } = matter(fileContents);
-
-    return {
-      slug: filename.replace(".md", ""),
-      title: data.title,
-      date: data.date,
-      description: data.description,
-      content,
-    };
-  });
 }
 
-export function getRecentPosts(limit: number = 5): Post[] {
-  const postsDirectory = path.join(process.cwd(), "posts");
-  const filenames = fs.readdirSync(postsDirectory);
-
-  const posts = filenames.map((filename) => {
-    const filePath = path.join(postsDirectory, filename);
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const { data, content } = matter(fileContents);
-
-    return {
-      slug: filename.replace(".md", ""),
-      title: data.title,
-      date: data.date,
-      description: data.description,
-      content,
-    };
-  });
-
-  const res = posts
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit);
-  return res;
-}
-
-export function getPostBySlug(slug: string): Post {
-  const postsDirectory = path.join(process.cwd(), "posts");
-  const filePath = path.join(postsDirectory, `${slug}.md`);
-  const fileContents = fs.readFileSync(filePath, "utf8");
-  const { data, content } = matter(fileContents);
-
-  return {
-    slug,
-    title: data.title,
-    date: new Date(data.date),
-    description: data.description,
-    content,
-    ogImage: data.ogImage,
+export interface AboutData {
+  attributes: {
+    role?: string;
+    location?: string;
+    [key: string]: any;
   };
+  content: string;
+}
+
+// 記事一覧を取得する関数
+export function getPosts(): Post[] {
+  return Object.entries(postModules).map(([filepath, content]) => {
+    const slug = filepath.split('/').pop()?.replace('.md', '') || '';
+    const { data, content: body } = matter(content as string);
+    
+    return {
+      slug,
+      content: body,
+      title: data.title || 'Untitled',
+      date: data.date || '',
+    };
+  }).sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+// 自己紹介を取得する関数（ここがエラーの原因）
+export function getAboutContent(): AboutData {
+  const content = contentModules['/public/about/about.md'] as string;
+  
+  if (!content) {
+    return { attributes: {}, content: 'about.md not found' };
+  }
+
+  const { data, content: body } = matter(content);
+  return { 
+    attributes: data, 
+    content: body 
+  };
+}
+
+export function getPostBySlug(slug: string): Post | undefined {
+  const allPosts = getPosts(); // 既存の全取得関数
+  return allPosts.find(p => p.slug === slug);
 }

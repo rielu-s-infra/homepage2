@@ -1,14 +1,14 @@
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: unipro-site
+  name: rielu-homepage2-site
   namespace: argocd
 spec:
   namespace: argocd
   applicationRefs:
-    - namePattern: "unipro-site"
+    - namePattern: "rielu-homepage2-site"
       images:
-        - alias: "unipro-site"
-          imageName: "registry.uniproject.jp/official/unipro-site"
+        - alias: "rielu-homepage2-site"
+          imageName: "registry.rielu-homepage2/official/rielu-homepage2-site"
           commonUpdateSettings:
             updateStrategy: "semver"

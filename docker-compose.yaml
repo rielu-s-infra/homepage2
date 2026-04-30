@@ -1,4 +1,4 @@
-name: unipro-site
+name: rielu-homepage2-site
 services:
   app:
     build: .
@@ -9,8 +9,8 @@ services:
       DISCORD_GUILD_ID: "YourGuildID"
       DISCORD_TARGET_ROLE_ID: "YourTargetRoleID"
     networks:
-      - unipro-site-network
+      - rielu-homepage2-site-network
 
 networks:
-  unipro-site-network:
+  rielu-homepage2-site-network:
     driver: bridge

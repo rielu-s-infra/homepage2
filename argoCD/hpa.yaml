@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: unipro-site-hpa
+  name: rielu-homepage2-site-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: unipro-site
+    name: rielu-homepage2-site
   minReplicas: 1
   maxReplicas: 10
   metrics:

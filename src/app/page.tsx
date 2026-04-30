@@ -1,164 +1,215 @@
-import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/button";
-import PostList from "@/components/RecentPostList";
-import { getRecentPosts } from "@/lib/posts";
+import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { getPosts, getAboutContent } from '../lib/posts';
+import type { Post, AboutData } from '../lib/posts';
+import { getGitHubRepos } from '../lib/github';
+import type { Repo } from '../lib/github';
+import { getKumaStatus } from '../lib/status';
+import type { ServiceStatus } from '../lib/status';
 
-export const dynamic = "force-static";
+export default function HomePage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [repos, setRepos] = useState<Repo[]>([]);
+  const [about, setAbout] = useState<AboutData | null>(null);
+  const [services, setServices] = useState<ServiceStatus[]>([]);
 
-export const metadata: Metadata = {
-  title: "全国ネットのデジタル創作サークル - UniProject",
-  description:
-    "全国ネットのデジタル創作サークル『UniProject』の公式サイトです！普段の活動や、その他お知らせなどをお届けします。",
-  twitter: {
-    card: "summary",
-    site: "@UniPro_digital",
-    title: "全国ネットのデジタル創作サークル - UniProject",
-    description:
-      "全国ネットのデジタル創作サークル『UniProject』の公式サイトです！普段の活動や、その他お知らせなどをお届けします。",
-    images: [
-      {
-        url: "https://www.uniproject.jp/img/UniPro_Logo.webp",
-        width: 128,
-        height: 134,
-        alt: "UniProjectのロゴ",
-      },
-    ],
-  },
-  openGraph: {
-    type: "website",
-    siteName: "デジタル創作サークルUniProject",
-    title: "全国ネットのデジタル創作サークル - UniProject",
-    description:
-      "全国ネットのデジタル創作サークル『UniProject』の公式サイトです！普段の活動や、その他お知らせなどをお届けします。",
-    images: [
-      {
-        url: "https://www.uniproject.jp/img/UniPro_Logo.webp",
-        width: 128,
-        height: 134,
-        alt: "UniProjectのロゴ",
-      },
-    ],
-  },
-  alternates: { canonical: "https://www.uniproject.jp/" },
-};
+  const kumaSlug = "rielu-service"; 
 
-export default function Home() {
-  const posts = getRecentPosts(4);
-  return (
-    <main className="flex min-h-screen w-full flex-col items-center text-gray-800 space-y-0">
-      <section
-        id="first"
-        className="relative w-screen h-screen flex flex-col items-start justify-center overflow-hidden"
-      >
-        {/* ベースの背景グラデーション */}
-        <div className="absolute inset-0 bg-linear-to-br from-violet-100/20 via-fuchsia-100/10 to-amber-100/20" />
+  useEffect(() => {
+    // 初回読み込み
+    getKumaStatus(kumaSlug).then(setServices);
+    
+    // 1分ごとに更新（ポーリング）
+    const interval = setInterval(() => {
+      getKumaStatus(kumaSlug).then(setServices);
+    }, 60000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
-        {/* 上部の暗いグラデーション */}
-        <div className="absolute top-0 left-0 right-0 h-48 bg-linear-to-b from-black/40 via-black/20 to-transparent z-5" />
+  const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
 
-        <Image
-          src="/img/top.webp"
-          alt="背景画像"
-          loading="eager"
-          priority={true}
-          fill
-          className="object-cover scale-105 transition-all duration-[2s] hover:scale-100 brightness-[0.85] hover:brightness-90 -z-10"
-        />
-        <div className="relative z-10 text-white md:ml-20 mx-4 flex flex-col items-start space-y-8 lg:w-1/2">
-          <div className="animate-fadeIn backdrop-blur-xs bg-white/5 p-6 sm:p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl">
-            <a href="#first" className="group">
-              <h3 className="text-lg sm:text-xl lg:text-2xl text-left font-medium tracking-[0.2em] font-sansjp text-white/90 group-hover:text-white transition-all">
-                デジタル創作サークル
-              </h3>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-left font-sansen font-bold tracking-tight mt-3">
-                UniProject
-              </h2>
-            </a>
-            <p className="text-left font-medium font-sansjp text-lg sm:text-xl md:text-2xl text-white/90 mt-8 leading-relaxed tracking-wide">
-              プログラミング・音楽制作・映像制作などの
-              <br className="hidden sm:block" />
-              デジタル関連の創作活動を行うサークルです。
-            </p>
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-x-5 sm:space-y-0 mt-8 sm:mt-10">
-              <Button<"button">
-                href="/about"
-                disabled={false}
-                className="hover-lift px-6 sm:px-10 py-3 sm:py-4 backdrop-blur-md bg-white text-gray-500 hover:bg-white/90 font-medium tracking-[0.2em] rounded-xl shadow-xl text-sm sm:text-base"
-              >
-                もっと詳しく
-              </Button>
-              <Button<"button">
-                href="/join"
-                disabled={false}
-                className="hover-lift px-6 sm:px-10 py-3 sm:py-4 backdrop-blur-md bg-white/20 border-2 border-white/30 hover:bg-white/10 font-medium tracking-[0.2em] rounded-xl shadow-xl text-sm sm:text-base text-white"
-              >
-                参加する
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Link
-          className="absolute bottom-0 left-0 z-10 w-full pb-4 sm:pb-8 pt-4 font-sansen text-white/80 hover:text-white transition-colors duration-300 group"
-          href="#recent"
-        >
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <div className="w-6 sm:w-[30px] h-6 sm:h-[30px] relative animate-float">
-              <Image
-                src="data:image/png;base64,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"
-                alt="circled-down-2"
-                fill
-                className="opacity-75 group-hover:opacity-100 transition-all duration-500 group-hover:transform group-hover:translate-y-1 object-contain"
-              />
-            </div>
-            <span className="tracking-[0.5em] uppercase text-xs sm:text-sm">
-              Scroll
-            </span>
-          </div>
-        </Link>
-      </section>
-      <section
-        id="recent"
-        className="flex min-h-screen w-full items-center justify-center bg-linear-to-br from-slate-50 via-white to-slate-50"
-      >
-        <div className="w-full px-4 sm:px-6 py-16 sm:py-24 lg:px-8">
-          <div className="max-w-5xl mx-auto flex flex-col items-center space-y-8 sm:space-y-12">
-            {/* タイトル部分 */}
-            <div className="w-full text-center space-y-3 sm:space-y-4">
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-sansen tracking-wide animate-slideUp bg-linear-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                最近の出来事
-              </h3>
-              <p className="text-sm sm:text-base text-slate-600 font-sansjp tracking-wider">
-                UniProjectの活動やお知らせをお届けします
-              </p>
-            </div>
+  useEffect(() => {
+    setPosts(getPosts());
+    setAbout(getAboutContent());
+    getGitHubRepos(username).then(setRepos).catch(console.error);
+  }, [username]);
 
-            {/* 投稿一覧とボタン */}
-            <div className="w-full flex flex-col items-center">
-              <div className="w-full animate-fadeIn pb-6 sm:pb-8">
-                <PostList
-                  dirname="announce"
-                  posts={posts}
-                  className="bg-white backdrop-blur-xs rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-shadow"
-                  listClassName="grid-cols-1! md:grid-cols-2!"
+return (
+    <div className="min-h-screen pb-20">
+      {/* Header */}
+      <header className="max-w-5xl mx-auto pt-24 px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-6">
+              {/* アイコン画像 (Avatar) */}
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse"></div>
+                <img 
+                  src="/icon.png" // 公開ディレクトリ(public)に icon.png を配置してください
+                  alt="Rieru"
+                  className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900"
                 />
               </div>
-              <Link
-                href="/announce"
-                className="group inline-flex items-center space-x-2 text-slate-600 hover:text-slate-900 transition-colors mt-2"
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="text-xs font-mono text-slate-500 tracking-widest uppercase">System Active</span>
+                </div>
+                <h1 className="text-5xl font-black text-white sm:text-7xl tracking-tighter">
+                  Rieru<span className="text-sky-500">.</span>dev
+                </h1>
+              </div>
+            </div>
+            
+            <p className="mt-6 text-xl text-slate-400 max-w-max leading-relaxed">
+              Infrastructure Engineer. focusing on <span className="text-white">Kubernetes</span>, 
+              <span className="text-white">IPv6 Networking</span>, and <span className="text-white">Self-hosting</span>.
+            </p>
+            
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a href="#repos" className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold transition-all shadow-lg shadow-sky-900/20">GitHub Projects</a>
+              <a href="#posts" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-all border border-slate-700">Read Blog</a>
+              {/* リンク集へのボタン */}
+              <a 
+                href="https://rielulinks.uniproject.jp" // リンク集サイトのパス（または外部URL）
+                className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2"
               >
-                <span className="font-sansjp tracking-wider text-sm sm:text-base">
-                  もっと見る
-                </span>
-                <span className="transform transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
+                <span>Link Tree</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+              </a>
             </div>
           </div>
         </div>
-      </section>
-    </main>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-6 mt-32 space-y-32">
+        
+        {/* About Section */}
+        <section id="about" className="scroll-mt-24">
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="text-xl font-bold text-white tracking-tight">About Me</h2>
+            <div className="h-[1px] flex-1 bg-slate-800"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+            {/* About内アイコン */}
+            <div className="md:col-span-3 flex flex-col items-center gap-6">
+              <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+                <img 
+                  src="/icon.png" 
+                  alt="Profile"
+                  className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+                />
+              </div>
+              <div className="w-full space-y-4">
+                <AboutInfoCard label="Role" value={about?.attributes.role || "Engineer"} color="text-sky-400" />
+                <AboutInfoCard label="Base" value={about?.attributes.location || "Japan"} color="text-slate-200" />
+              </div>
+            </div>
+
+            <div className="md:col-span-9 prose-custom">
+              <ReactMarkdown>{about?.content || ""}</ReactMarkdown>
+            </div>
+          </div>
+        </section>
+
+        {/* Server Status - グリッドを少し強調 */}
+        <section className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-bold text-white tracking-tight">System Status</h2>
+            <span className="text-[10px] font-mono text-slate-500 uppercase">Auto-refresh: 60s</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {services.length > 0 ? (
+              services.map((svc) => (
+                <StatusCard 
+                  key={svc.name} 
+                  label={svc.name} 
+                  status={svc.status} 
+                  color={svc.color} 
+                />
+              ))
+            ) : (
+              <p className="text-slate-500 text-sm">Fetching status...</p>
+            )}
+          </div>
+        </section>
+
+        {/* Repos - カードの視認性向上 */}
+        <section id="repos" className="scroll-mt-24">
+          <h2 className="section-title">Featured Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {repos.slice(0, 6).map(repo => (
+              <a key={repo.id} href={repo.html_url} target="_blank" rel="noopener" className="glass-card group flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="font-bold text-lg text-white group-hover:text-sky-400 transition-colors">{repo.name}</h3>
+                    <span className="text-xs font-mono text-slate-500">⭐ {repo.stargazers_count}</span>
+                  </div>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-6">{repo.description || "No description provided."}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-sky-500 border border-slate-700 uppercase tracking-tighter">
+                    {repo.language || "Config"}
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* Posts - 行間のゆとりとホバー */}
+        <section id="posts" className="scroll-mt-24">
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="text-xl font-bold text-white tracking-tight">Latest Logs</h2>
+            <div className="h-[1px] flex-1 bg-slate-800"></div>
+          </div>
+          
+          <div className="space-y-1 font-mono">
+            {posts.map(post => (
+              <a 
+                key={post.slug} 
+                href={`/posts/${post.slug}`} 
+                className="group flex items-start gap-4 p-3 rounded hover:bg-slate-800/50 transition-all border-l-2 border-transparent hover:border-sky-500"
+              >
+                <span className="text-slate-500 shrink-0 text-xs mt-1">
+                  [{post.date.replace(/-/g, '/')}]
+                </span>
+                <span className="text-sky-500 shrink-0 text-xs mt-1">INFO</span>
+                <div className="flex-1">
+                  <span className="text-slate-200 group-hover:text-white transition-colors">
+                    {post.title}
+                  </span>
+                  <span className="ml-2 opacity-0 group-hover:opacity-100 text-sky-500 text-xs transition-opacity">
+                    --read-more
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+      </main>
+    </div>
+  );
+}
+
+// ヘルパーコンポーネント
+function AboutInfoCard({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl">
+      <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">{label}</div>
+      <div className={`font-mono text-sm ${color}`}>{value}</div>
+    </div>
+  );
+}
+
+function StatusCard({ label, status, color }: { label: string; status: string; color: string }) {
+  return (
+    <div className="p-4 bg-slate-800/30 border border-slate-800/50 rounded-lg">
+      <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">{label}</div>
+      <div className={`text-sm font-bold ${color}`}>{status}</div>
+    </div>
   );
 }
