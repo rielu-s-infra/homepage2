@@ -18,7 +18,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: rielu-site3-service
+                name: rielu-site3
                 port:
                   number: 3000
   tls:
