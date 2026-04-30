@@ -1,14 +1,17 @@
-// src/lib/posts.ts
 import matter from "gray-matter";
 
-// Markdownファイルを一括取得（最新のVite形式）
+// 1. プロジェクトルート直下の /posts フォルダをスキャン
 const postModules = import.meta.glob("/posts/*.md", {
   query: "?raw",
   import: "default",
   eager: true,
 });
 
-const contentModules = import.meta.glob("public/about/*.md", {
+// 2. public/about/about.md は Vite の制限で直接インポートできないため
+// ルート直下に content フォルダなどを作成して移動するか、
+// もしくは posts フォルダの中に about.md を入れてしまうのが最も簡単です。
+// ここでは、仮にルート直下の /content/about.md に置いたと想定します。
+const aboutModules = import.meta.glob("/public/about/about.md", {
   query: "?raw",
   import: "default",
   eager: true,
@@ -25,13 +28,13 @@ export interface AboutData {
   attributes: {
     role?: string;
     location?: string;
-    [key: string]: unknown; // Changed 'any' to 'unknown'
+    [key: string]: unknown;
   };
   content: string;
 }
 
-// 記事一覧を取得する関数
 export function getPosts(): Post[] {
+  // key は "/posts/filename.md" になります
   return Object.entries(postModules)
     .map(([filepath, content]) => {
       const slug = filepath.split("/").pop()?.replace(".md", "") || "";
@@ -47,12 +50,14 @@ export function getPosts(): Post[] {
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
-// 自己紹介を取得する関数（ここがエラーの原因）
 export function getAboutContent(): AboutData {
-  const content = contentModules["/public/about/about.md"] as string;
+  // 指定したパス "/content/about.md" と一致させる
+  const content = aboutModules["/public/about/about.md"] as string;
 
   if (!content) {
-    return { attributes: {}, content: "about.md not found" };
+    // デバッグ用：何が読み込まれているかコンソールに出す
+    console.error("Vite Glob Keys:", Object.keys(aboutModules));
+    return { attributes: {}, content: "about.md not found. フォルダ位置を確認してください。" };
   }
 
   const { data, content: body } = matter(content);
@@ -63,6 +68,6 @@ export function getAboutContent(): AboutData {
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
-  const allPosts = getPosts(); // 既存の全取得関数
+  const allPosts = getPosts();
   return allPosts.find((p) => p.slug === slug);
 }
