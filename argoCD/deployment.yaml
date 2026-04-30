@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rielu-homepage2-site
+  name: rielu-site3
 spec:
   selector:
     matchLabels:
-      app: rielu-homepage2-site
+      app: rielu-site3
   replicas: 1
   template:
     metadata:
       labels:
-        app: rielu-homepage2-site
+        app: rielu-site3
     spec:
       containers:
         - name: app
-          image: registry.rielu-homepage2/official/rielu-homepage2-site:1.0.0
+          image: registry.rielu-homepage2/official/rielu-site3:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

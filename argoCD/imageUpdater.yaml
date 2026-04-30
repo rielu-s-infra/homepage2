@@ -1,14 +1,14 @@
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: rielu-homepage2-site
+  name: rielu-site3
   namespace: argocd
 spec:
   namespace: argocd
   applicationRefs:
-    - namePattern: "rielu-homepage2-site"
+    - namePattern: "rielu-site3"
       images:
-        - alias: "rielu-homepage2-site"
-          imageName: "registry.rielu-homepage2/official/rielu-homepage2-site"
+        - alias: "rielu-site3"
+          imageName: "registry.rielu-homepage2/official/rielu-site3"
           commonUpdateSettings:
             updateStrategy: "semver"
