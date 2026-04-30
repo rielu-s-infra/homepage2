@@ -1,24 +1,21 @@
-// src/main.tsx
 import { Buffer } from "buffer";
 import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom/client";
 import HomePage from "./app/page";
 import PostPage from "./app/posts/[slug]/page";
+import "./index.css";
 
 window.Buffer = Buffer;
 
-import ReactDOM from "react-dom/client";
-import "./index.css"; // 必ず他のコンポーネントより後にインポート
-
 declare global {
   interface Window {
-    Buffer: typeof Buffer; // Use typeof Buffer for type safety
+    Buffer: typeof Buffer;
   }
 }
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
-  // URLの変更を検知する
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
@@ -27,22 +24,21 @@ export default function App() {
     return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
-  // ルーティングロジック
+  // ルーティング: /posts/ から始まる場合
   if (currentPath.startsWith("/posts/")) {
-    const slug = currentPath.split("/").pop() || "";
-    return <PostPage params={Promise.resolve({ slug })} />;
+    // 末尾のスラッシュを除去してから最後の要素（slug）を取得
+    const slug = currentPath.replace(/\/$/, "").split("/").pop() || "";
+    return <PostPage slug={slug} />;
   }
 
   return <HomePage />;
 }
 
 const rootElement = document.getElementById("root");
-if (!rootElement) {
-  throw new Error("Failed to find the root element");
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 }
-
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
