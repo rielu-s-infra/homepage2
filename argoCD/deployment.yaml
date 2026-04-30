@@ -35,9 +35,6 @@ spec:
               httpHeaders:
                 - name: X-k8s-Header
                   value: readiness
-          envFrom:
-            - secretRef:
-                name: api-secret
           env:
             - name: TZ
               value: Asia/Tokyo
