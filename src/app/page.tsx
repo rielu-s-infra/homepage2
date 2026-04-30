@@ -34,7 +34,7 @@ export default function HomePage() {
     setPosts(getPosts());
     setAbout(getAboutContent());
     getGitHubRepos(username).then(setRepos).catch(console.error);
-  }, []);
+  }, [username]);
 
   return (
     <div className="min-h-screen pb-20">
