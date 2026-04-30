@@ -46,7 +46,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
                 <img 
-                  src="/icon.png" 
+                  src="/img/icon.png" 
                   alt="Rieru Icon" 
                   width="80" 
                   height="80" 
@@ -130,7 +130,7 @@ export default function HomePage() {
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
                 <img
-                  src="/icon.png"
+                  src="/img/icon.png"
                   alt="Profile"
                   width={400}
                   height={400}
