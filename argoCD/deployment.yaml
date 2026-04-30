@@ -38,5 +38,3 @@ spec:
           env:
             - name: TZ
               value: Asia/Tokyo
-      imagePullSecrets:
-        - name: internal-harbor
