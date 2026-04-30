@@ -17,4 +17,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "git.enableCommitSigning": true
+
+
+  #変更の同期の自動化
+  "git.postCommitCommand": "push"
+  
 }
