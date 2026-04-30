@@ -8,7 +8,7 @@ const postModules = import.meta.glob("/posts/*.md", {
   eager: true,
 });
 
-const contentModules = import.meta.glob("public/about/about.md", {
+const contentModules = import.meta.glob("public/about/*.md", {
   query: "?raw",
   import: "default",
   eager: true,
