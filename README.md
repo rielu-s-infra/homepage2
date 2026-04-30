@@ -1,15 +1,73 @@
-# UniPro-site
+# React + TypeScript + Vite
 
-[![CodeQL](https://github.com/UniPro-tech/UniPro-site/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/UniPro-tech/UniPro-site/actions/workflows/github-code-scanning/codeql)
-[![Docker Build and Push](https://github.com/UniPro-tech/UniPro-site/actions/workflows/docker-tag.yaml/badge.svg)](https://github.com/UniPro-tech/UniPro-site/actions/workflows/docker-tag.yaml)
-[![ESLint](https://github.com/UniPro-tech/UniPro-site/actions/workflows/eslint.yml/badge.svg?branch=master)](https://github.com/UniPro-tech/UniPro-site/actions/workflows/eslint.yml)
-[![MIT LICENCE](http://img.shields.io/badge/license-MIT-blue.svg?logo=github&style=flat)](./LICENCE.md)
-![Next.JS](http://img.shields.io/badge/-Next.JS-black.svg?logo=nextdotjs&style=flat)
-![K8s](http://img.shields.io/badge/-Kubernetes-black.svg?logo=kubernetes&style=flat)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-UniProject's New Website
+Currently, two official plugins are available:
 
-## License
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-The content of this project itself is licensed under the [Attribution-NonCommercial-ShareAlike 4.0 International (CC-BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) license, and the underlying source code used to format and display that content is licensed under the MIT license.
-For more information, please see [LICENSE File](LICENSE).
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```

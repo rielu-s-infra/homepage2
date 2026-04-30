@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node", "vite/client"],
+    "tsBuildInfoFile": "./node_modules/.dottsbuildinfo",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false, // ここを false にすると a, b の any エラーが消えます
+
+    /* Node.js の型を追加 */
+    "types": ["node"] 
+  },
+  "include": ["src"]
+}
