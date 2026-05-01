@@ -15,9 +15,18 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+<<<<<<< HEAD
 
   // General Settings
   "editor.formatOnSave": true,
   "git.enableCommitSigning": true,
   "css.validate": false
+=======
+  "git.enableCommitSigning": true
+
+
+  #変更の同期の自動化
+  "git.postCommitCommand": "push"
+  
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c
 }

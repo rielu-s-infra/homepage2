@@ -9,6 +9,10 @@ spec:
     - namePattern: "rielu-site3"
       images:
         - alias: "rielu-site3"
+<<<<<<< HEAD
           imageName: "registry.uniproject.jp/official/rielu-site3"
           commonUpdateSettings:
             updateStrategy: "semver"
+=======
+          imageName: "registry.uniproject.jp/rielu-site3/rielu-site3"
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c

@@ -16,6 +16,11 @@ WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+
+# Generate Prisma client
+# RUN bun x prisma generate
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 

@@ -1,25 +1,32 @@
-import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import { getPostBySlug, getPosts } from "../../../lib/posts";
+import { useEffect, useState } from "react";
+import { getPostBySlug } from "../../../lib/posts";
 
-// SSG（静的サイト生成）のために全スラグを事前に定義
-export async function generateStaticParams() {
-  const posts = getPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+interface PostPageProps {
+  slug: string;
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+export default function PostPage({ slug }: PostPageProps) {
+  const [post, setPost] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // データ取得を実行
+    const data = getPostBySlug(slug);
+    setPost(data);
+    setLoading(false);
+  }, [slug]);
+
+  if (loading) {
+    return <div className="text-white p-10">Loading...</div>;
+  }
 
   if (!post) {
-    notFound();
+    return (
+      <div className="text-white p-10">
+        Post not found. (slug: {slug})
+      </div>
+    );
   }
 
   return (
@@ -37,7 +44,6 @@ export default async function PostPage({
         </h1>
       </header>
 
-      {/* Markdownを表示 */}
       <div className="prose prose-invert prose-sky max-w-none">
         <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>

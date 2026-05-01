@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import Image from "next/image";
 import StatusGrid from "./StatusGrid";
+=======
+import { useEffect, useState } from "react";
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c
 import ReactMarkdown from "react-markdown";
 import AboutInfoCard from "./AboutInfoCard";
 import type { Repo } from "../lib/github";
@@ -13,6 +17,7 @@ export default async function HomePage() {
   const orgName = process.env.NEXT_PUBLIC_GITHUB_ORG || "rielu-s-infra";
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://rielu.uniproject.jp";
 
+<<<<<<< HEAD
   // Data fetching happens on the server
   const posts = getPosts();
   const about = getAboutContent();
@@ -23,6 +28,27 @@ export default async function HomePage() {
   const initialServices = await getKumaStatus(statusUrl).catch(() => []);
   const repos = await getGitHubRepos(username).catch(() => [] as Repo[]);
   const orgRepos = await getGitHubRepos(orgName).catch(() => [] as Repo[]);
+=======
+  useEffect(() => {
+    // 初回読み込み
+    getKumaStatus(kumaSlug).then(setServices);
+
+    // 1分ごとに更新（ポーリング）
+    const interval = setInterval(() => {
+      getKumaStatus(kumaSlug).then(setServices);
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
+
+  useEffect(() => {
+    setPosts(getPosts());
+    setAbout(getAboutContent());
+    getGitHubRepos(username).then(setRepos).catch(console.error);
+  }, [username]);
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c
 
   return (
     <div className="min-h-screen pb-20">
@@ -32,6 +58,7 @@ export default async function HomePage() {
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-6">
               <div className="relative">
+<<<<<<< HEAD
                 <div className="absolute -inset-1 bg-linear-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
                 <Image
                   src="/img/icon.png"
@@ -39,6 +66,15 @@ export default async function HomePage() {
                   width={80}
                   height={80}
                   className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900"
+=======
+                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
+                <img 
+                  src="/img/icon.png" 
+                  alt="Rieru Icon" 
+                  width="80" 
+                  height="80" 
+                  className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900" 
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c
                 />
               </div>
               <div>
@@ -68,7 +104,17 @@ export default async function HomePage() {
               <a href="#posts" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-all border border-slate-700">
                 Read Blog
               </a>
+<<<<<<< HEAD
               <a href="https://rielulinks.uniproject.jp" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2">
+=======
+              {/* リンク集へのボタン */}
+              <a
+                href="https://rielulink.uniproject.jp/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2"
+              >
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c
                 <span>Link Tree</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img">
                   <title>External Link</title>
@@ -89,7 +135,17 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+<<<<<<< HEAD
                 <Image src="/img/icon.png" alt="Profile" width={400} height={400} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" />
+=======
+                <img
+                  src="/img/icon.png"
+                  alt="Profile"
+                  width={400}
+                  height={400}
+                  className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+                />
+>>>>>>> a22570f6e304e9b5e8192c688edd2aae8c22031c
               </div>
               <div className="w-full space-y-4">
                 <AboutInfoCard label="Role" value={about?.attributes.role || "Engineer"} color="text-sky-400" />
