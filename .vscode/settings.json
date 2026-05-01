@@ -1,20 +1,23 @@
 {
   "js/ts.tsdk.path": "node_modules/typescript/lib",
 
-  // TypeScriptファイル用の設定
+  // TypeScript & TSX
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome",
     "editor.formatOnSave": true
   },
-  // TypeScript React (TSX) ファイル用の設定
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome",
     "editor.formatOnSave": true
   },
-  // JS/TS全般に対する設定
-  "editor.defaultFormatter": "biomejs.biome",
+
+  // JSON with comments
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "git.enableCommitSigning": true
+
+  // General Settings
+  "editor.formatOnSave": true,
+  "git.enableCommitSigning": true,
+  "css.validate": false
 }

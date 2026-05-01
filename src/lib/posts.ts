@@ -1,18 +1,7 @@
 // src/lib/posts.ts
+import fs from "fs";
+import path from "path";
 import matter from "gray-matter";
-
-// Markdownファイルを一括取得（最新のVite形式）
-const postModules = import.meta.glob("/posts/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-
-const contentModules = import.meta.glob("/content/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
 
 export interface Post {
   slug: string;
@@ -32,30 +21,41 @@ export interface AboutData {
 
 // 記事一覧を取得する関数
 export function getPosts(): Post[] {
-  return Object.entries(postModules)
-    .map(([filepath, content]) => {
-      const slug = filepath.split("/").pop()?.replace(".md", "") || "";
-      const { data, content: body } = matter(content as string);
+  const postsDir = path.join(process.cwd(), "posts");
+  if (!fs.existsSync(postsDir)) return [];
+
+  const fileNames = fs.readdirSync(postsDir);
+  return fileNames
+    .filter(fileName => fileName.endsWith(".md"))
+    .map((fileName) => {
+      const slug = fileName.replace(/\.md$/, "");
+      const fullPath = path.join(postsDir, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+      const { data, content: body } = matter(fileContents);
+
+      // ファイル名の先頭から日付を取得 (例: 2024-05-20-slug.md)
+      const dateMatch = fileName.match(/^(\d{4}-\d{2}-\d{2})/);
+      const fileNameDate = dateMatch ? dateMatch[1] : "";
 
       return {
         slug,
         content: body,
         title: data.title || "Untitled",
-        date: data.date || "",
+        date: data.date ? String(data.date) : fileNameDate,
       };
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
-// 自己紹介を取得する関数（ここがエラーの原因）
 export function getAboutContent(): AboutData {
-  const content = contentModules["/public/about/about.md"] as string;
+  const aboutPath = path.join(process.cwd(), "public", "about", "about.md");
 
-  if (!content) {
+  if (!fs.existsSync(aboutPath)) {
     return { attributes: {}, content: "about.md not found" };
   }
 
-  const { data, content: body } = matter(content);
+  const fileContent = fs.readFileSync(aboutPath, "utf8");
+  const { data, content: body } = matter(fileContent);
   return {
     attributes: data,
     content: body,

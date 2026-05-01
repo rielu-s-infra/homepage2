@@ -8,8 +8,8 @@ export interface Repo {
 }
 
 export async function getGitHubRepos(username: string): Promise<Repo[]> {
-  // Viteの環境変数からトークンを取得（もし設定する場合）
-  const token = import.meta.env.VITE_GITHUB_TOKEN;
+  // Next.jsのServer Component環境では process.env を使用します
+  const token = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
@@ -19,15 +19,19 @@ export async function getGitHubRepos(username: string): Promise<Repo[]> {
     headers.Authorization = `token ${token}`;
   }
 
-  const res = await fetch(
+  // まずはユーザーのリポジトリとして取得を試みます
+  let res = await fetch(
     `https://api.github.com/users/${username}/repos?sort=updated&per_page=10`,
-    {
-      // Vite(React)では next: { revalidate } は無視されますが、
-      // ブラウザのキャッシュ機能は働きます。
-      method: "GET",
-      headers: headers,
-    },
+    { method: "GET", headers }
   );
+
+  // 404（ユーザーが見つからない）場合は、Organizationとして取得を試みます
+  if (!res.ok && res.status === 404) {
+    res = await fetch(
+      `https://api.github.com/orgs/${username}/repos?sort=updated&per_page=10`,
+      { method: "GET", headers }
+    );
+  }
 
   if (!res.ok) {
     // レートリミット制限などに掛かった場合のハンドリング
@@ -35,5 +39,5 @@ export async function getGitHubRepos(username: string): Promise<Repo[]> {
     return [];
   }
 
-  return res.json();
+  return (await res.json()) as Repo[];
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "types": ["vite/client", "node"], // Combined and sorted
+    "types": ["node"],
     "tsBuildInfoFile": "./node_modules/.dottsbuildinfo",
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -20,7 +20,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false // ここを false にすると a, b の any エラーが消えます
+    "noImplicitAny": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

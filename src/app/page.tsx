@@ -1,40 +1,28 @@
-import Image from "next/image"; // Imageコンポーネントをインポート
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import StatusGrid from "./StatusGrid";
 import ReactMarkdown from "react-markdown";
+import AboutInfoCard from "./AboutInfoCard";
 import type { Repo } from "../lib/github";
 import { getGitHubRepos } from "../lib/github";
-import type { AboutData, Post } from "../lib/posts";
 import { getAboutContent, getPosts } from "../lib/posts";
-import type { ServiceStatus } from "../lib/status";
 import { getKumaStatus } from "../lib/status";
 
-export default function HomePage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [about, setAbout] = useState<AboutData | null>(null);
-  const [services, setServices] = useState<ServiceStatus[]>([]);
-
+export default async function HomePage() {
   const kumaSlug = "rielu-service";
+  const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || "penti-nameko";
+  const orgName = process.env.NEXT_PUBLIC_GITHUB_ORG || "rielu-s-infra";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://rielu.uniproject.jp";
 
-  useEffect(() => {
-    // 初回読み込み
-    getKumaStatus(kumaSlug).then(setServices);
-
-    // 1分ごとに更新（ポーリング）
-    const interval = setInterval(() => {
-      getKumaStatus(kumaSlug).then(setServices);
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
-
-  useEffect(() => {
-    setPosts(getPosts());
-    setAbout(getAboutContent());
-    getGitHubRepos(username).then(setRepos).catch(console.error);
-  }, []);
+  // Data fetching happens on the server
+  const posts = getPosts();
+  const about = getAboutContent();
+  // On the server, we must provide an absolute URL. 
+  // Ensure getKumaStatus supports absolute URLs or prepends a base.
+  // サーバーサイドでのフェッチには、ドメインを含む絶対パスが必要です。
+  const statusUrl = `${baseUrl}/api-kuma/api/status-page/${kumaSlug}`;
+  const initialServices = await getKumaStatus(statusUrl).catch(() => []);
+  const repos = await getGitHubRepos(username).catch(() => [] as Repo[]);
+  const orgRepos = await getGitHubRepos(orgName).catch(() => [] as Repo[]);
 
   return (
     <div className="min-h-screen pb-20">
@@ -43,11 +31,10 @@ export default function HomePage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-6">
-              {/* アイコン画像 (Avatar) */}
               <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
+                <div className="absolute -inset-1 bg-linear-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
                 <Image
-                  src="/icon.png"
+                  src="/img/icon.png"
                   alt="Rieru Icon"
                   width={80}
                   height={80}
@@ -75,41 +62,17 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
-              <a
-                href="#repos"
-                className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold transition-all shadow-lg shadow-sky-900/20"
-              >
+              <a href="#repos" className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold transition-all shadow-lg shadow-sky-900/20">
                 GitHub Projects
               </a>
-              <a
-                href="#posts"
-                className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-all border border-slate-700"
-              >
+              <a href="#posts" className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-all border border-slate-700">
                 Read Blog
               </a>
-              {/* リンク集へのボタン */}
-              <a
-                href="https://rielulinks.uniproject.jp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2"
-              >
+              <a href="https://rielulinks.uniproject.jp" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-bold transition-all border border-slate-800 flex items-center gap-2">
                 <span>Link Tree</span>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  role="img"
-                  aria-label="External Link Icon"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img">
                   <title>External Link</title>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
             </div>
@@ -118,179 +81,111 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 mt-32 space-y-32">
-        {/* About Section */}
         <section id="about" className="scroll-mt-24">
           <div className="flex items-center gap-3 mb-8">
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              About Me
-            </h2>
-            <div className="h-[1px] flex-1 bg-slate-800" />
+            <h2 className="text-xl font-bold text-white tracking-tight">About Me</h2>
+            <div className="h-px flex-1 bg-slate-800" />
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-                <Image
-                  src="/icon.png"
-                  alt="Profile"
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
-                />
+                <Image src="/img/icon.png" alt="Profile" width={400} height={400} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" />
               </div>
               <div className="w-full space-y-4">
-                <AboutInfoCard
-                  label="Role"
-                  value={about?.attributes.role || "Engineer"}
-                  color="text-sky-400"
-                />
-                <AboutInfoCard
-                  label="Base"
-                  value={about?.attributes.location || "Japan"}
-                  color="text-slate-200"
-                />
+                <AboutInfoCard label="Role" value={about?.attributes.role || "Engineer"} color="text-sky-400" />
+                <AboutInfoCard label="Base" value={about?.attributes.location || "Japan"} color="text-slate-200" />
               </div>
             </div>
-
             <div className="md:col-span-9 prose-custom">
-              <ReactMarkdown>{about?.content || ""}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  img: ({ ...props }) => (
+                    <img
+                      {...props}
+                      className="rounded-xl border border-slate-800 w-full h-auto my-8 opacity-90 hover:opacity-100 transition-opacity shadow-2xl"
+                      loading="lazy"
+                      alt={props.alt || ""}
+                    />
+                  ),
+                }}
+              >
+                {about?.content || ""}
+              </ReactMarkdown>
             </div>
           </div>
         </section>
 
-        {/* Server Status */}
-        <section className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              System Status
-            </h2>
-            <span className="text-[10px] font-mono text-slate-500 uppercase">
-              Auto-refresh: 60s
-            </span>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {services.length > 0 ? (
-              services.map((svc) => (
-                <StatusCard
-                  key={svc.name}
-                  label={svc.name}
-                  status={svc.status}
-                  color={svc.color}
-                />
-              ))
-            ) : (
-              <p className="text-slate-500 text-sm">Fetching status...</p>
-            )}
-          </div>
-        </section>
+        <StatusGrid initialServices={initialServices} kumaSlug={kumaSlug} />
 
-        {/* Repos */}
         <section id="repos" className="scroll-mt-24">
-          <h2 className="section-title">Featured Projects</h2>
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="text-xl font-bold text-white tracking-tight">Personal Projects</h2>
+            <div className="h-px flex-1 bg-slate-800" />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {repos.slice(0, 6).map((repo) => (
-              <a
-                key={repo.id}
-                href={repo.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-card group flex flex-col justify-between"
-              >
+              <a key={repo.id} href={repo.html_url} target="_blank" rel="noopener noreferrer" className="glass-card group flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-bold text-lg text-white group-hover:text-sky-400 transition-colors">
-                      {repo.name}
-                    </h3>
-                    <span className="text-xs font-mono text-slate-500">
-                      ⭐ {repo.stargazers_count}
-                    </span>
+                    <h3 className="font-bold text-lg text-white group-hover:text-sky-400 transition-colors">{repo.name}</h3>
+                    <span className="text-xs font-mono text-slate-500">⭐ {repo.stargazers_count}</span>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                    {repo.description || "No description provided."}
-                  </p>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-6">{repo.description || "No description provided."}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-sky-500 border border-slate-700 uppercase tracking-tighter">
-                    {repo.language || "Config"}
-                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-sky-500 border border-slate-700 uppercase tracking-tighter">{repo.language || "Config"}</span>
                 </div>
               </a>
             ))}
           </div>
         </section>
 
-        {/* Posts */}
+        <section id="org-repos" className="scroll-mt-24">
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="text-xl font-bold text-white tracking-tight">Organization Projects</h2>
+            <div className="h-px flex-1 bg-slate-800" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {orgRepos.length > 0 ? (
+              orgRepos.slice(0, 6).map((repo) => (
+                <a key={repo.id} href={repo.html_url} target="_blank" rel="noopener noreferrer" className="glass-card group flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="font-bold text-lg text-white group-hover:text-sky-400 transition-colors">{repo.name}</h3>
+                      <span className="text-xs font-mono text-slate-500">⭐ {repo.stargazers_count}</span>
+                    </div>
+                    <p className="text-sm text-slate-400 leading-relaxed mb-6">{repo.description || "No description provided."}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-sky-500 border border-slate-700 uppercase tracking-tighter">{repo.language || "Config"}</span>
+                  </div>
+                </a>
+              ))
+            ) : (
+              <p className="text-slate-500 text-sm italic col-span-full">No organization projects found.</p>
+            )}
+          </div>
+        </section>
+
         <section id="posts" className="scroll-mt-24">
           <div className="flex items-center gap-3 mb-8">
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              Latest Logs
-            </h2>
-            <div className="h-[1px] flex-1 bg-slate-800" />
+            <h2 className="text-xl font-bold text-white tracking-tight">Latest Logs</h2>
+            <div className="h-px flex-1 bg-slate-800" />
           </div>
-
           <div className="space-y-1 font-mono">
             {posts.map((post) => (
-              <a
-                key={post.slug}
-                href={`/posts/${post.slug}`}
-                className="group flex items-start gap-4 p-3 rounded hover:bg-slate-800/50 transition-all border-l-2 border-transparent hover:border-sky-500"
-              >
-                <span className="text-slate-500 shrink-0 text-xs mt-1">
-                  [{post.date.replace(/-/g, "/")}]
-                </span>
+              <a key={post.slug} href={`/posts/${post.slug}`} className="group flex items-start gap-4 p-3 rounded hover:bg-slate-800/50 transition-all border-l-2 border-transparent hover:border-sky-500">
+                <span className="text-slate-500 shrink-0 text-xs mt-1">[{post.date.replace(/-/g, "/")}]</span>
                 <span className="text-sky-500 shrink-0 text-xs mt-1">INFO</span>
                 <div className="flex-1">
-                  <span className="text-slate-200 group-hover:text-white transition-colors">
-                    {post.title}
-                  </span>
-                  <span className="ml-2 opacity-0 group-hover:opacity-100 text-sky-500 text-xs transition-opacity">
-                    --read-more
-                  </span>
+                  <span className="text-slate-200 group-hover:text-white transition-colors">{post.title}</span>
+                  <span className="ml-2 opacity-0 group-hover:opacity-100 text-sky-500 text-xs transition-opacity">--read-more</span>
                 </div>
               </a>
             ))}
           </div>
         </section>
       </main>
-    </div>
-  );
-}
-
-// ヘルパーコンポーネント
-function AboutInfoCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl">
-      <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-        {label}
-      </div>
-      <div className={`font-mono text-sm ${color}`}>{value}</div>
-    </div>
-  );
-}
-
-function StatusCard({
-  label,
-  status,
-  color,
-}: {
-  label: string;
-  status: string;
-  color: string;
-}) {
-  return (
-    <div className="p-4 bg-slate-800/30 border border-slate-800/50 rounded-lg">
-      <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">
-        {label}
-      </div>
-      <div className={`text-sm font-bold ${color}`}>{status}</div>
     </div>
   );
 }

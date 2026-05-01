@@ -21,7 +21,23 @@ interface KumaResponse {
 
 export async function getKumaStatus(slug: string): Promise<ServiceStatus[]> {
   try {
-    const response = await fetch(`/api-kuma/api/status-page/${slug}`);
+    // If slug is already a full URL (from Server Component), use it.
+    // Otherwise, treat it as a slug and use the relative path (from Client Component).
+    const url = (slug.startsWith('http') || slug.startsWith('/')) 
+      ? slug 
+      : `/api-kuma/api/status-page/${slug}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text();
+      throw new Error(`Expected JSON but received ${contentType}. Body: ${text.slice(0, 100)}...`);
+    }
+    
     const data = (await response.json()) as KumaResponse;
 
     if (!data.publicGroupList) return [];
