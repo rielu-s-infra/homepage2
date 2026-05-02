@@ -69,7 +69,7 @@ jobs:
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          COSIGN_YES: true  # ← これを追加（重要）
         run: |
-          for tag in ${TAGS}; do
-            cosign sign --yes "${tag}@${DIGEST}"
-          done
+          # 1行ずつタグを取り出して署名を実行
+          echo "$TAGS" | xargs -I {} cosign sign --yes "{}@${DIGEST}"
