@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
   // `Buffer`のポリフィルが必要な場合、webpack設定で追加できますが、
   // Next.js 13以降はNode.jsの組み込みモジュールを自動的にポリフィルすることが多いため、
   // まずは不要か確認し、エラーが出る場合にのみ追加を検討してください。
@@ -10,9 +9,6 @@ const nextConfig = {
   //   return config;
   // },
   allowedDevOrigins: ['127.0.0.1'],
-  images: {
-    unoptimized: true,
-  },
   // APIリクエストを外部サービスにリライトする設定
   // 開発環境と本番環境で同じように動作させるために必要
   async rewrites() {
@@ -33,7 +29,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             // 開発時に必要な 'unsafe-eval' を許可しつつ、基本的なセキュリティを確保する例
             // 本番環境ではより厳格な設定を検討してください
-            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://rieluoff.uniproject.jp; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self';",
           },
         ],
       },
