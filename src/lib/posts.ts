@@ -1,18 +1,12 @@
 // src/lib/posts.ts
 import matter from "gray-matter";
+import fs from "fs";
+import path from "path";
 
-// Markdownファイルを一括取得（最新のVite形式）
-const postModules = import.meta.glob("/posts/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-
-const contentModules = import.meta.glob("/content/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
+// Define the base directory for posts and content
+// Next.jsのプロジェクトルートからの相対パスで指定
+const postsDirectory = path.join(process.cwd(), "posts");
+const aboutContentPath = path.join(process.cwd(), "public", "about", "about.md");
 
 export interface Post {
   slug: string;
@@ -31,27 +25,35 @@ export interface AboutData {
 }
 
 // 記事一覧を取得する関数
+// Server Componentで実行されるため、fsモジュールを使用
 export function getPosts(): Post[] {
-  return Object.entries(postModules)
-    .map(([filepath, content]) => {
-      const slug = filepath.split("/").pop()?.replace(".md", "") || "";
-      const { data, content: body } = matter(content as string);
+  const fileNames = fs.readdirSync(postsDirectory);
+  const allPostsData = fileNames.map((fileName) => {
+    const slug = fileName.replace(/\.md$/, "");
+    const fullPath = path.join(postsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, "utf8");
+    const { data, content: body } = matter(fileContents);
 
-      return {
-        slug,
-        content: body,
-        title: data.title || "Untitled",
-        date: data.date || "",
-      };
-    })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    return {
+      slug,
+      content: body,
+      title: data.title || "Untitled",
+      date: data.date || "",
+    };
+  });
+
+  return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 // 自己紹介を取得する関数（ここがエラーの原因）
+// Server Componentで実行されるため、fsモジュールを使用
 export function getAboutContent(): AboutData {
-  const content = contentModules["/public/about/about.md"] as string;
-
-  if (!content) {
+  let content = "";
+  try {
+    content = fs.readFileSync(aboutContentPath, "utf8");
+  } catch (error) {
+    console.error("Error reading about.md:", error);
+    // ファイルが見つからない、または読み込めない場合のフォールバック
     return { attributes: {}, content: "about.md not found" };
   }
 

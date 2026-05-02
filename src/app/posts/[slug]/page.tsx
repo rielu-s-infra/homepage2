@@ -1,6 +1,12 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { getPostBySlug, getPosts } from "../../../lib/posts";
+import LinkCard from "../../LinkCard";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
 // SSG（静的サイト生成）のために全スラグを事前に定義
 export async function generateStaticParams() {
@@ -10,11 +16,34 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+// OGPなどのメタデータを定義
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+
+  if (!post) return {};
+
+  // 本文から最初の100文字を説明文として抽出
+  const description = post.content.slice(0, 100).replace(/\n/g, " ") + "...";
+
+  return {
+    title: `${post.title} | rielu officialsite`,
+    description: description,
+    openGraph: {
+      title: post.title,
+      description: description,
+      type: "article",
+      url: `https://rielu.uniproject.jp/posts/${slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: description,
+    },
+  };
+}
+
+export default async function PostPage({ params }: Props) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
 
@@ -39,7 +68,24 @@ export default async function PostPage({
 
       {/* Markdownを表示 */}
       <div className="prose prose-invert prose-sky max-w-none">
-        <ReactMarkdown>{post.content}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            a: ({ node, ...props }) => {
+              // リンクのテキストがURLそのものである場合、LinkCardとしてレンダリングする
+              // (例: [https://google.com](https://google.com) のような記述)
+              const isLinkCard = props.children === props.href;
+              
+              if (isLinkCard && props.href) {
+                return (
+                  <LinkCard url={props.href} title={props.title || undefined} />
+                );
+              }
+              return <a {...props} className="text-sky-500 hover:underline" />;
+            }
+          }}
+        >
+          {post.content}
+        </ReactMarkdown>
       </div>
 
       <footer className="mt-20 pt-8 border-t border-slate-800">

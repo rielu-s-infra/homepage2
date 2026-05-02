@@ -8,8 +8,8 @@ export interface Repo {
 }
 
 export async function getGitHubRepos(username: string): Promise<Repo[]> {
-  // Viteの環境変数からトークンを取得（もし設定する場合）
-  const token = import.meta.env.VITE_GITHUB_TOKEN;
+  // Next.js では process.env を使用します
+  const token = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
@@ -32,6 +32,33 @@ export async function getGitHubRepos(username: string): Promise<Repo[]> {
   if (!res.ok) {
     // レートリミット制限などに掛かった場合のハンドリング
     console.error(`GitHub API error: ${res.status}`);
+    return [];
+  }
+
+  return res.json();
+}
+
+export async function getGitHubOrgRepos(org: string): Promise<Repo[]> {
+  const token = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+
+  const headers: HeadersInit = {
+    Accept: "application/vnd.github.v3+json",
+  };
+
+  if (token) {
+    headers.Authorization = `token ${token}`;
+  }
+
+  const res = await fetch(
+    `https://api.github.com/orgs/${org}/repos?sort=updated&per_page=10`,
+    {
+      method: "GET",
+      headers: headers,
+    },
+  );
+
+  if (!res.ok) {
+    console.error(`GitHub Org API error: ${res.status}`);
     return [];
   }
 

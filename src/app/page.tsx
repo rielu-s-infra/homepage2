@@ -1,40 +1,41 @@
-import Image from "next/image"; // Imageコンポーネントをインポート
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import StatusGrid from "./StatusGrid"; // Client Component
+import AboutInfoCard from "./AboutInfoCard"; // Relative import for sibling component
 import type { Repo } from "../lib/github";
-import { getGitHubRepos } from "../lib/github";
-import type { AboutData, Post } from "../lib/posts";
+import { getGitHubRepos, getGitHubOrgRepos } from "../lib/github";
 import { getAboutContent, getPosts } from "../lib/posts";
-import type { ServiceStatus } from "../lib/status";
 import { getKumaStatus } from "../lib/status";
+ 
+// 常に最新のステータスを取得するため、ビルド時の静的生成ではなくリクエストごとの動的レンダリングを強制する
+export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [about, setAbout] = useState<AboutData | null>(null);
-  const [services, setServices] = useState<ServiceStatus[]>([]);
+export default async function HomePage() { // async を追加して Server Component にする
 
-  const kumaSlug = "rielu-service";
+  const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || "penti-nameko"; // VITE_ を NEXT_PUBLIC_ に変更
+  const orgName = process.env.NEXT_PUBLIC_GITHUB_ORG || "rielu-s-infra"; 
 
-  useEffect(() => {
-    // 初回読み込み
-    getKumaStatus(kumaSlug).then(setServices);
+  // Data fetching happens on the server
+  const posts = getPosts(); // src/lib/posts.ts が fs を使うように修正されたため、サーバーで直接読み込める
+  const about = getAboutContent(); // 同上
+ 
+  // Kuma Status の初期データをサーバーサイドで取得
+  const initialServices = await getKumaStatus().catch((error) => {
+    console.error("Failed to fetch initial Kuma status on server:", error);
+    return []; // エラー時は空の配列を返す
+  });
+ 
+  // GitHub リポジトリのデータをサーバーサイドで取得
+  const repos = await getGitHubRepos(username).catch((error) => {
+    console.error("Failed to fetch GitHub repos on server:", error);
+    return [] as Repo[]; // エラー時は空の配列を返す
+  });
 
-    // 1分ごとに更新（ポーリング）
-    const interval = setInterval(() => {
-      getKumaStatus(kumaSlug).then(setServices);
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const username = import.meta.env.VITE_GITHUB_USERNAME || "penti-nameko";
-
-  useEffect(() => {
-    setPosts(getPosts());
-    setAbout(getAboutContent());
-    getGitHubRepos(username).then(setRepos).catch(console.error);
-  }, []);
+  // Organization リポジトリのデータをサーバーサイドで取得
+  const orgRepos = await getGitHubOrgRepos(orgName).catch((error) => {
+    console.error("Failed to fetch GitHub org repos on server:", error);
+    return [] as Repo[];
+  });
 
   return (
     <div className="min-h-screen pb-20">
@@ -45,10 +46,11 @@ export default function HomePage() {
             <div className="flex items-center gap-4 mb-6">
               {/* アイコン画像 (Avatar) */}
               <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
+                <div className="absolute -inset-1 bg-linear-to-r from-sky-500 to-blue-600 rounded-full blur opacity-40 animate-pulse" />
                 <Image
-                  src="/icon.png"
+                  src="/img/icon.png"
                   alt="Rieru Icon"
+                  priority
                   width={80}
                   height={80}
                   className="relative w-20 h-20 rounded-full border-2 border-slate-800 object-cover bg-slate-900"
@@ -124,15 +126,16 @@ export default function HomePage() {
             <h2 className="text-xl font-bold text-white tracking-tight">
               About Me
             </h2>
-            <div className="h-[1px] flex-1 bg-slate-800" />
+            <div className="h-px flex-1 bg-slate-800" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-3 flex flex-col items-center gap-6">
               <div className="w-full aspect-square rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
                 <Image
-                  src="/icon.png"
+                  src="/img/icon.png"
                   alt="Profile"
+                  priority
                   width={400}
                   height={400}
                   className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
@@ -159,30 +162,8 @@ export default function HomePage() {
         </section>
 
         {/* Server Status */}
-        <section className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              System Status
-            </h2>
-            <span className="text-[10px] font-mono text-slate-500 uppercase">
-              Auto-refresh: 60s
-            </span>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {services.length > 0 ? (
-              services.map((svc) => (
-                <StatusCard
-                  key={svc.name}
-                  label={svc.name}
-                  status={svc.status}
-                  color={svc.color}
-                />
-              ))
-            ) : (
-              <p className="text-slate-500 text-sm">Fetching status...</p>
-            )}
-          </div>
-        </section>
+        {/* StatusGrid は Client Component なので、サーバーで取得した initialServices を渡す */}
+        <StatusGrid initialServices={initialServices} />
 
         {/* Repos */}
         <section id="repos" className="scroll-mt-24">
@@ -219,13 +200,48 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Org Repos */}
+        <section id="org-repos" className="scroll-mt-24">
+          <h2 className="section-title">Organization Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {orgRepos.slice(0, 4).map((repo) => (
+              <a
+                key={repo.id}
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-card group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="font-bold text-lg text-white group-hover:text-sky-400 transition-colors">
+                      {repo.name}
+                    </h3>
+                    <span className="text-xs font-mono text-slate-500">
+                      ⭐ {repo.stargazers_count}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                    {repo.description || "No description provided."}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-sky-500 border border-slate-700 uppercase tracking-tighter">
+                    {repo.language || "Config"}
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* Posts */}
         <section id="posts" className="scroll-mt-24">
           <div className="flex items-center gap-3 mb-8">
             <h2 className="text-xl font-bold text-white tracking-tight">
               Latest Logs
             </h2>
-            <div className="h-[1px] flex-1 bg-slate-800" />
+            <div className="h-px flex-1 bg-slate-800" />
           </div>
 
           <div className="space-y-1 font-mono">
@@ -252,45 +268,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-    </div>
-  );
-}
-
-// ヘルパーコンポーネント
-function AboutInfoCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl">
-      <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-        {label}
-      </div>
-      <div className={`font-mono text-sm ${color}`}>{value}</div>
-    </div>
-  );
-}
-
-function StatusCard({
-  label,
-  status,
-  color,
-}: {
-  label: string;
-  status: string;
-  color: string;
-}) {
-  return (
-    <div className="p-4 bg-slate-800/30 border border-slate-800/50 rounded-lg">
-      <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">
-        {label}
-      </div>
-      <div className={`text-sm font-bold ${color}`}>{status}</div>
     </div>
   );
 }
