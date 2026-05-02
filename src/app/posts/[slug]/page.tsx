@@ -8,12 +8,8 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-// SSG（静的サイト生成）のために全スラグを事前に定義
-export async function generateStaticParams() {
-  const posts = getPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+interface PostPageProps {
+  slug: string;
 }
 
 // OGPなどのメタデータを定義
@@ -48,7 +44,11 @@ export default async function PostPage({ params }: Props) {
   const post = getPostBySlug(slug);
 
   if (!post) {
-    notFound();
+    return (
+      <div className="text-white p-10">
+        Post not found. (slug: {slug})
+      </div>
+    );
   }
 
   return (
@@ -66,7 +66,6 @@ export default async function PostPage({ params }: Props) {
         </h1>
       </header>
 
-      {/* Markdownを表示 */}
       <div className="prose prose-invert prose-sky max-w-none">
         <ReactMarkdown
           components={{

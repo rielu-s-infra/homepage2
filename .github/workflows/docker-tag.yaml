@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write  # Gitタグを書き込むために必要
   packages: write
   id-token: write
 

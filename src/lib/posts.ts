@@ -1,4 +1,3 @@
-// src/lib/posts.ts
 import matter from "gray-matter";
 import fs from "fs";
 import path from "path";
@@ -19,7 +18,7 @@ export interface AboutData {
   attributes: {
     role?: string;
     location?: string;
-    [key: string]: unknown; // Changed 'any' to 'unknown'
+    [key: string]: unknown;
   };
   content: string;
 }
@@ -65,6 +64,6 @@ export function getAboutContent(): AboutData {
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
-  const allPosts = getPosts(); // 既存の全取得関数
+  const allPosts = getPosts();
   return allPosts.find((p) => p.slug === slug);
 }
