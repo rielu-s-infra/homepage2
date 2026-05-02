@@ -1,25 +1,47 @@
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import { useEffect, useState } from "react";
-import { getPostBySlug } from "../../../lib/posts";
+import { getPostBySlug, getPosts } from "../../../lib/posts";
+import LinkCard from "../../LinkCard";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
 interface PostPageProps {
   slug: string;
 }
 
-export default function PostPage({ slug }: PostPageProps) {
-  const [post, setPost] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+// OGPなどのメタデータを定義
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
 
-  useEffect(() => {
-    // データ取得を実行
-    const data = getPostBySlug(slug);
-    setPost(data);
-    setLoading(false);
-  }, [slug]);
+  if (!post) return {};
 
-  if (loading) {
-    return <div className="text-white p-10">Loading...</div>;
-  }
+  // 本文から最初の100文字を説明文として抽出
+  const description = post.content.slice(0, 100).replace(/\n/g, " ") + "...";
+
+  return {
+    title: `${post.title} | rielu officialsite`,
+    description: description,
+    openGraph: {
+      title: post.title,
+      description: description,
+      type: "article",
+      url: `https://rielu.uniproject.jp/posts/${slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: description,
+    },
+  };
+}
+
+export default async function PostPage({ params }: Props) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
 
   if (!post) {
     return (
@@ -45,7 +67,24 @@ export default function PostPage({ slug }: PostPageProps) {
       </header>
 
       <div className="prose prose-invert prose-sky max-w-none">
-        <ReactMarkdown>{post.content}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            a: ({ node, ...props }) => {
+              // リンクのテキストがURLそのものである場合、LinkCardとしてレンダリングする
+              // (例: [https://google.com](https://google.com) のような記述)
+              const isLinkCard = props.children === props.href;
+              
+              if (isLinkCard && props.href) {
+                return (
+                  <LinkCard url={props.href} title={props.title || undefined} />
+                );
+              }
+              return <a {...props} className="text-sky-500 hover:underline" />;
+            }
+          }}
+        >
+          {post.content}
+        </ReactMarkdown>
       </div>
 
       <footer className="mt-20 pt-8 border-t border-slate-800">

@@ -1,21 +1,11 @@
 import matter from "gray-matter";
+import fs from "fs";
+import path from "path";
 
-// 1. プロジェクトルート直下の /posts フォルダをスキャン
-const postModules = import.meta.glob("/posts/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-
-// 2. public/about/about.md は Vite の制限で直接インポートできないため
-// ルート直下に content フォルダなどを作成して移動するか、
-// もしくは posts フォルダの中に about.md を入れてしまうのが最も簡単です。
-// ここでは、仮にルート直下の /content/about.md に置いたと想定します。
-const aboutModules = import.meta.glob("/public/about/about.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
+// Define the base directory for posts and content
+// Next.jsのプロジェクトルートからの相対パスで指定
+const postsDirectory = path.join(process.cwd(), "posts");
+const aboutContentPath = path.join(process.cwd(), "public", "about", "about.md");
 
 export interface Post {
   slug: string;
@@ -33,31 +23,37 @@ export interface AboutData {
   content: string;
 }
 
+// 記事一覧を取得する関数
+// Server Componentで実行されるため、fsモジュールを使用
 export function getPosts(): Post[] {
-  // key は "/posts/filename.md" になります
-  return Object.entries(postModules)
-    .map(([filepath, content]) => {
-      const slug = filepath.split("/").pop()?.replace(".md", "") || "";
-      const { data, content: body } = matter(content as string);
+  const fileNames = fs.readdirSync(postsDirectory);
+  const allPostsData = fileNames.map((fileName) => {
+    const slug = fileName.replace(/\.md$/, "");
+    const fullPath = path.join(postsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, "utf8");
+    const { data, content: body } = matter(fileContents);
 
-      return {
-        slug,
-        content: body,
-        title: data.title || "Untitled",
-        date: data.date || "",
-      };
-    })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    return {
+      slug,
+      content: body,
+      title: data.title || "Untitled",
+      date: data.date || "",
+    };
+  });
+
+  return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
+// 自己紹介を取得する関数（ここがエラーの原因）
+// Server Componentで実行されるため、fsモジュールを使用
 export function getAboutContent(): AboutData {
-  // 指定したパス "/content/about.md" と一致させる
-  const content = aboutModules["/public/about/about.md"] as string;
-
-  if (!content) {
-    // デバッグ用：何が読み込まれているかコンソールに出す
-    console.error("Vite Glob Keys:", Object.keys(aboutModules));
-    return { attributes: {}, content: "about.md not found. フォルダ位置を確認してください。" };
+  let content = "";
+  try {
+    content = fs.readFileSync(aboutContentPath, "utf8");
+  } catch (error) {
+    console.error("Error reading about.md:", error);
+    // ファイルが見つからない、または読み込めない場合のフォールバック
+    return { attributes: {}, content: "about.md not found" };
   }
 
   const { data, content: body } = matter(content);

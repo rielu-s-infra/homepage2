@@ -1,4 +1,11 @@
 {
+  
+  "json.validate.enable": false,
+  "json.format.enable": false,
+  "files.associations": {
+    "**/settings.json": "jsonc",
+    "bun.lock": "plaintext",
+  }
   "js/ts.tsdk.path": "node_modules/typescript/lib",
 
   // TypeScriptファイル用の設定
@@ -16,10 +23,13 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "git.enableCommitSigning": true
+  "git.enableCommitSigning": true,
 
-
-  #変更の同期の自動化
-  "git.postCommitCommand": "push"
+  "css.customData": [],
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "ts",
+    "typescriptreact": "typescript"
+  }
   
 }
