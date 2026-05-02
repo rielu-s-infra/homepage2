@@ -1,17 +1,13 @@
 name: Docker Build and Push
 on:
   push:
-    tags:
-      - "v*"
-
-concurrency:
-  group: docker-build-push
-  cancel-in-progress: true
+    branches:
+      - "master"
 
 permissions:
-  contents: read
+  contents: write  # Gitタグを書き込むために必要
   packages: write
-  id-token: write # Cosign Keyless署名に必須
+  id-token: write
 
 jobs:
   build:
@@ -19,23 +15,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 全履歴を取得しないと最新タグが計算できない
 
-      # QEMUはBuildxの前にセットアップするのが推奨
+      # 1. 最新のタグを取得し、パッチバージョンを+1する
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch # デフォルトで 1.2.2 -> 1.2.3 にする
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Harborへのログイン
       - name: Login to Harbor
         uses: docker/login-action@v3
         with:
           registry: registry.uniproject.jp
-          # Harborのロボットアカウント名は 'robot$name' の形式なのでシングルクォートで囲むのが安全
           username: 'robot$rielu-site3+github-publisher'
           password: ${{ secrets.HARBOR_TOKEN }}
 
+      # 2. 自動生成された new_tag (v1.x.x) をイメージに付与
       - name: Add metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -43,32 +47,29 @@ jobs:
           images: registry.uniproject.jp/rielu-site3/rielu-site3
           tags: |
             type=raw,value=latest
-            type=semver,pattern={{version}}
+            type=raw,value=${{ steps.tag_version.outputs.new_tag }}
             type=sha,prefix=sha-,format=short
 
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@v6 # 最新のv6/v7系を利用
+        uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Harbor上のレジストリキャッシュを利用
           cache-from: type=registry,ref=registry.uniproject.jp/rielu-site3/rielu-site3:buildcache
           cache-to: type=registry,ref=registry.uniproject.jp/rielu-site3/rielu-site3:buildcache,mode=max
 
-      # 署名ステップ
+      # 3. 署名 (自動生成されたタグに対しても実行)
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3
 
-      - name: Sign Docker images with GitHub OIDC
+      - name: Sign Docker images
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: |
           for tag in ${TAGS}; do
-            # Harborのタグに対して署名を付与
             cosign sign --yes "${tag}@${DIGEST}"
           done
