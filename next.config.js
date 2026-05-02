@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: 'standalone',
   // `Buffer`のポリフィルが必要な場合、webpack設定で追加できますが、
   // Next.js 13以降はNode.jsの組み込みモジュールを自動的にポリフィルすることが多いため、
   // まずは不要か確認し、エラーが出る場合にのみ追加を検討してください。

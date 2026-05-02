@@ -39,12 +39,6 @@ ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 
 ENV NODE_ENV=production
 
-# Install git to allow Next.js to detect the repository and enable features like Fast Refresh
-RUN apt update && apt install -y git
-
-# Remove apt cache to reduce image size
-RUN rm -rf /var/lib/apt/lists/*
-
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
@@ -54,7 +48,7 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN bun run build
 
 # ============================================
-# Stage 3: Run Vite application (Static Server)
+# Stage 3: Run Next.js in Standalone Mode
 # ============================================
 
 FROM oven/bun:1 AS runner
@@ -63,17 +57,17 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
-
-COPY --from=builder /app/dist ./dist
-
-# serve をインストール
-RUN bun add serve
+ENV HOSTNAME="0.0.0.0"
 
 USER bun
 
 EXPOSE 3000
 
-# 正しい引数の渡し方: -l (listen) の後にポート、その後にホストを指定する場合が多いですが、
-# 'serve' の場合は '-l 3000' で全インターフェースを向くこともありますが、
-# 確実に 0.0.0.0 を指定するには以下のように記述します。
-CMD ["bunx", "serve", "-s", "dist", "-l", "tcp://0.0.0.0:3000"]
+# standalone モードで出力されたファイルをコピー
+# public と static は standalone フォルダに含まれないため、手動でコピーする必要があります
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+# server.js は standalone モードのエントリポイントです
+CMD ["bun", "server.js"]
